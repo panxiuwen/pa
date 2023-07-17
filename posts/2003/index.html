@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>Android相关笔记 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文是笔者记录的部分Android的笔记\n\n\n\n\n初始化安卓12版miui13启用悬浮窗后触控失灵的问题：使用drop(root)干掉(安卓13没有这个问题)建议关闭miui内存扩展\n小米10S Root和Xposed参考\n解BL锁小米手机可根据官方教程可解锁\n准备工作使用Miflash安装fastboot等驱动在发行的包下载中找到设备安装的镜像并下载下载安装最新的MagiskPayload-dumper、Platform-tools和Shamiko可以在博主的公共网盘里获取\n生成boot.img并刷入在镜像中寻找payload.bin文件，将此文件拖放到payload-dumperX64.exe程序上，打开提取得到的文件夹就可以看到boot.img文件将boot.img放在手机中，启动Magisk，在主页-&gt;Magisk-&gt;安装-&gt;选择并修补一个文件-&gt;boot.img，会在download目录中生成magisk_patched-XXX.img，将它放在复制到电脑里手机关机，再长按音量键下+关机键进入fastboot模式解压Platform-tools，将magisk生成的magisk_patched-XXX.img放入此目录中，用管理员权限启动powershell，使用下面的命令刷入\n1./fastboot flash boot magisk_patched-26100_g1bdZ.img\n显示Finished .Total time 后重启\n1./fastboot reboot\n重启后在主页-&gt;Magisk里会显示当前 XX.X(总之和软件版本一样)，如果点击安装会多出直接安装和安装到未使用的槽位(OTA后)这两个选项，底栏的超级用户也可以使用了\n隐藏root设置中开启Zygisk，勾上遵守排除列表在配置排除列表中添加需要隐藏的应用，已知如下APP需要隐藏Root才能启动\n1淘宝、支付宝、几乎所有的银行App\n以下APP会启动弹窗提示Root\n1Keepass\n开启Xposed使用Magisk刷入Lsposed zygisk拨号键打*#*#5776733#*#*即可调出Lsposed\n\n其他设置修改充电电流使用Scene4(滑块条反人类)和Scene5(一个使用开源代码的破工具按天付费你敢信？)镧·系统工具箱(貌似不可用)均可\n\n其他应用笔记微信走FCM推送启用Miui的谷歌基础服务安装Google Play版微信使用Magisk刷入FCMHostsForChina，虽然可能不需要安装Thanox，需购买专业版打开Lsposed启用Thanox在Thanox中打开微信代收-&gt;DIAG，显示Server:Connected即可\n知乎知乎live缓存存储位置：/data/data/com.zhihu.android/files/downloadCenter/live/\n","dateCreated":"2018-06-17T00:00:00+08:00","dateModified":"2023-07-03T20:48:57+08:00","datePublished":"2018-06-17T00:00:00+08:00","description":"本文是笔者记录的部分Android的笔记","headline":"Android相关笔记","image":["../10000/Android.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2003/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2003/","keywords":"Windows, System","thumbnailUrl":"../10000/Android.jpg"}</script>
+    <meta name="description" content="本文是笔者记录的部分Android的笔记">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Android相关笔记">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2003/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文是笔者记录的部分Android的笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-06-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-03T12:48:57.000Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2003/../10000/Android.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2003/../10000/Android.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Android相关笔记
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2018-06-17T00:00:00+08:00">
+	
+		    2018年 6月 17日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/System/">System</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文是笔者记录的部分Android的笔记</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%B1%B310S-Root%E5%92%8CXposed"><span class="toc-text">小米10S Root和Xposed</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3BL%E9%94%81"><span class="toc-text">解BL锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90boot-img%E5%B9%B6%E5%88%B7%E5%85%A5"><span class="toc-text">生成boot.img并刷入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%90%E8%97%8Froot"><span class="toc-text">隐藏root</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%90%AFXposed"><span class="toc-text">开启Xposed</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%AE%BE%E7%BD%AE"><span class="toc-text">其他设置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%85%85%E7%94%B5%E7%94%B5%E6%B5%81"><span class="toc-text">修改充电电流</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%BA%94%E7%94%A8%E7%AC%94%E8%AE%B0"><span class="toc-text">其他应用笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AE%E4%BF%A1%E8%B5%B0FCM%E6%8E%A8%E9%80%81"><span class="toc-text">微信走FCM推送</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9F%A5%E4%B9%8E"><span class="toc-text">知乎</span></a></li></ol></li></ol>
+<hr>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>安卓12版miui13启用悬浮窗后触控失灵的问题：使用drop(root)干掉(安卓13没有这个问题)<br>建议关闭miui内存扩展</p>
+<h3 id="小米10S-Root和Xposed"><a href="#小米10S-Root和Xposed" class="headerlink" title="小米10S Root和Xposed"></a>小米10S Root和Xposed</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv21829736/">参考</a></p>
+<h4 id="解BL锁"><a href="#解BL锁" class="headerlink" title="解BL锁"></a>解BL锁</h4><p>小米手机可根据<a target="_blank" rel="noopener" href="https://miuiver.com/how-to-unlock-xiaomi-phone/">官方教程</a>可解锁</p>
+<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><p>使用<a target="_blank" rel="noopener" href="https://miuiver.com/miflash/">Miflash</a>安装fastboot等驱动<br>在<a target="_blank" rel="noopener" href="https://xiaomirom.com/series/">发行的包下载</a>中找到设备安装的镜像并下载<br>下载安装最新的<a target="_blank" rel="noopener" href="https://github.com/topjohnwu/Magisk/releases">Magisk</a><br>Payload-dumper、Platform-tools和Shamiko可以在<a target="_blank" rel="noopener" href="http://982202733.ysepan.com/">博主的公共网盘</a>里获取</p>
+<h4 id="生成boot-img并刷入"><a href="#生成boot-img并刷入" class="headerlink" title="生成boot.img并刷入"></a>生成boot.img并刷入</h4><p>在镜像中寻找payload.bin文件，将此文件拖放到payload-dumperX64.exe程序上，打开提取得到的文件夹就可以看到boot.img文件<br>将boot.img放在手机中，启动Magisk，在主页-&gt;Magisk-&gt;安装-&gt;选择并修补一个文件-&gt;boot.img，会在download目录中生成<code>magisk_patched-XXX.img</code>，将它放在复制到电脑里<br>手机关机，再长按音量键下+关机键进入fastboot模式<br>解压Platform-tools，将magisk生成的<code>magisk_patched-XXX.img</code>放入此目录中，用管理员权限启动powershell，使用下面的命令刷入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fastboot flash boot magisk_patched-26100_g1bdZ.img</span><br></pre></td></tr></table></figure>
+<p>显示Finished .Total time 后重启</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./fastboot reboot</span><br></pre></td></tr></table></figure>
+<p>重启后在主页-&gt;Magisk里会显示当前 XX.X(总之和软件版本一样)，如果点击安装会多出直接安装和安装到未使用的槽位(OTA后)这两个选项，底栏的超级用户也可以使用了</p>
+<h4 id="隐藏root"><a href="#隐藏root" class="headerlink" title="隐藏root"></a>隐藏root</h4><p>设置中开启Zygisk，勾上遵守排除列表<br>在配置排除列表中添加需要隐藏的应用，已知如下APP需要隐藏Root才能启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">淘宝、支付宝、几乎所有的银行App</span><br></pre></td></tr></table></figure>
+<p>以下APP会启动弹窗提示Root</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Keepass</span><br></pre></td></tr></table></figure>
+<h4 id="开启Xposed"><a href="#开启Xposed" class="headerlink" title="开启Xposed"></a>开启Xposed</h4><p>使用Magisk刷入<a target="_blank" rel="noopener" href="https://github.com/LSPosed/LSPosed">Lsposed zygisk</a><br>拨号键打<code>*#*#5776733#*#*</code>即可调出Lsposed</p>
+<hr>
+<h3 id="其他设置"><a href="#其他设置" class="headerlink" title="其他设置"></a>其他设置</h3><h4 id="修改充电电流"><a href="#修改充电电流" class="headerlink" title="修改充电电流"></a>修改充电电流</h4><p>使用Scene4(滑块条反人类)和Scene5(一个使用开源代码的破工具按天付费你敢信？)<a target="_blank" rel="noopener" href="https://www.lasystools.com/">镧·系统工具箱</a>(貌似不可用)均可</p>
+<hr>
+<h3 id="其他应用笔记"><a href="#其他应用笔记" class="headerlink" title="其他应用笔记"></a>其他应用笔记</h3><h4 id="微信走FCM推送"><a href="#微信走FCM推送" class="headerlink" title="微信走FCM推送"></a>微信走FCM推送</h4><p>启用Miui的谷歌基础服务<br>安装Google Play版微信<br>使用Magisk刷入<a target="_blank" rel="noopener" href="https://blog.minamigo.moe/archives/201">FCMHostsForChina</a>，虽然可能不需要<br>安装<a target="_blank" rel="noopener" href="https://github.com/Tornaco/Thanox">Thanox</a>，需购买专业版<br>打开Lsposed启用Thanox<br>在Thanox中打开微信代收-&gt;DIAG，显示Server:Connected即可</p>
+<h4 id="知乎"><a href="#知乎" class="headerlink" title="知乎"></a>知乎</h4><p>知乎live缓存存储位置：<code>/data/data/com.zhihu.android/files/downloadCenter/live/</code></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/System/" rel="tag">System</a> <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Windows/" rel="tag">Windows</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4001/"
+                    data-tooltip="Linux配置服务"
+                    aria-label="上一篇: Linux配置服务"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2016/"
+                    data-tooltip="Windows相关笔记"
+                    aria-label="下一篇: Windows相关笔记"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4001/"
+                    data-tooltip="Linux配置服务"
+                    aria-label="上一篇: Linux配置服务"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2016/"
+                    data-tooltip="Windows相关笔记"
+                    aria-label="下一篇: Windows相关笔记"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

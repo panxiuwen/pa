@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>备份软件的使用 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"硬盘有价，数据无价，本文介绍了一些备份软件\n\n\n\n\n无论是硬件损毁或丢失、软件误删或者中病毒都造成不可挽回的数据丢失。所以养成备份的好习惯十分重要，在个人数据越发重要的2022年，笔者总结一些具有备份功能软件。\n\n各种网盘&amp;云服务现在国际国内各大厂都有自己的网盘，硬件、软件厂商也会在产品中针对的自己的用户群体来集成自己的云服务。1.大容量+低速类网盘，用于备份冷数据或资源最典型的是百度网盘，免费容量2TB，普通用户不仅限速100kB，而且到一定流量后限速10kB。百度网盘其实主打文件分享，文件审查+低下载速度就注定它不可能成为好的个人数据备份软件。甚至有同学和我吐槽把图片上传到百度网盘搜索就会推送类似的东西所以不敢用了。2.小容量+高速，适合备份个人文件腾讯微云的容量相比百度网盘小的多，速度确实比百度网盘快多了，速度已经比较适合存文件了。当然腾讯微云做的对于我来说用不成，因为搜索功能是废的，所以我转了阿里。阿里网盘的容量不如百度网盘，但是容量比腾讯微云大多了，传输速度比微云更快，综合体验吊打微云，已经适合备份文件了。3.同步网盘坚果云是按月流量计费，免费上传1G下载3G，难免有点捉襟见肘，但对于只写写博客和Paper的我还是绰绰有余的，是我用过的唯一适配了高分屏的免费同步盘。在移动端有个坚果云Markdown编辑器，用起来很舒服。PS：笔者写网页用的就是坚果云，由于网页源代码都比较小，所以免费版流量的每月1GB给我随便写都造不完。阿里网盘也有同步功能，但只对会员开放微云同步助手，只提供Win版和Mac版，同步目录占用微云的空间，是独立的客户端，但看起来做的不如腾讯微云做的用心。百度云也内置了同步网盘的服务，免费流量1G，没说上传还是下载，所以相比坚果云就没法用了，毕竟百度网盘做的真的非常垃圾。4.集成网盘&#x2F;云服务典型的例子是集成手机系统里的云服务，Apple的iCloud，miui等国产系统自带的云服务，用于同步手机里的相册、录音。集成在网易云音乐里的网易音乐云盘，方便用户听歌(规避版权)，集成在WPS里的云盘也带给用户非常棒的体验。5.无法使用的网盘作为网盘，稳定性是很重要的，不稳定网盘最典型的是MicroSoft的OneDrive，此外还有因为被墙而无法使用的国外网盘，最典型的是大名鼎鼎的GoogleDrive和Dropbox\n\n自建NAS对于网盘已经满足不了的用户，可以自建NAS，群辉等老牌NAS厂商的方案已经十分成熟。对于计算机能力较强，且喜欢折腾的用户来说，直接上Debian等Linux也不错\n\n备份软件Syncthing&#x2F;Verysync：跨平台、带穿透、多设备、保持同步FreeFileSync可用于同一设备不同文件夹或者远程服务器上的文件改动检测与同步，本身提供Win、Linux、Mac三平台及源代码，综合来看应用场景应该是用U盘或者移动硬盘进行数据备份。\n\nSyncthing的使用Syncthing是开源跨平台的基于p2p传输的备份软件，可用于Windows、Linux、MacOS、Andorid、群晖等设备间的备份，具有去中心化的特点，各个节点可以自由配置\nLinux下的安装与配置假设Linux上的目录是&#x2F;app&#x2F;syncthing，用户为root安装syncthing并写配置文件先下载，后上传到服务器\n解压命令是\n1tar -zxvf syncthing-linux-arm64-v1.19.1.tar.gz\n首先启动.&#x2F;syncthing，初始化完毕后按下Ctrl+C终止操作\n打开&#x2F;root&#x2F;.config&#x2F;syncthing&#x2F;config.xml\n1把所有127.0.0.1:8384的&lt;address&gt;改为0.0.0.0:8384\n设置systemd自启动修改文件名称&#x2F;app&#x2F;syncthing&#x2F;etc&#x2F;linux-systemd&#x2F;system&#x2F;&#115;&#x79;&#x6e;&#x63;&#116;&#x68;&#x69;&#110;&#x67;&#64;&#114;&#x6f;&#x6f;&#x74;&#46;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#101;\n拷贝到systemd文件夹\n1cp syncthing@root.service /etc/systemd/system/\n修改&#115;&#x79;&#110;&#99;&#116;&#x68;&#105;&#110;&#103;&#64;&#x72;&#111;&#111;&#116;&#46;&#115;&#101;&#x72;&#118;&#105;&#99;&#101;内容\n12nano /etc/systemd/system/syncthing@root.serviceExecStart=/app/syncthing/syncthing\n使用命令启动服务\n12systemctl enable syncthing@root.servicesystemctl start syncthing@root.service\n在控制端打开网页进行配置创建文件夹后配制文件夹，等待扫描完成后可以开启共享发送给添加的设备\nVerysync的使用Win的配置目录是C:\\Users\\你的用户名\\AppData\\Local\\Verysync\nLinux安装Verysync可以直接看成syncthing换皮注：2022年11月08日笔者测试官方命令行安装方案不可用先下载，后上传到服务器解压命令是\n1tar -zxvf syncthing-linux-arm64-v1.19.1.tar.gz\n首先启动.&#x2F;syncthing，初始化完毕后使用端口转发把127.0.0.1:8886转发到其他端口，打开网页端进行配置\n设置systemd自启动修改文件名称&#x2F;app&#x2F;verysync&#x2F;etc&#x2F;linux-systemd&#x2F;system&#x2F;&#118;&#101;&#114;&#x79;&#115;&#x79;&#110;&#x63;&#x40;&#114;&#x6f;&#x6f;&#116;&#46;&#x73;&#101;&#114;&#x76;&#105;&#x63;&#101;\n拷贝到systemd文件夹\n1cp verysync@root.service /etc/systemd/system/\n修改&#x73;&#121;&#110;&#99;&#x74;&#104;&#105;&#x6e;&#103;&#64;&#x72;&#111;&#x6f;&#116;&#x2e;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#x65;内容\n12nano /etc/systemd/system/verysync@root.serviceExecStart=/app/verysync/verysync\n使用命令启动服务\n12systemctl enable verysync@root.servicesystemctl start verysync@root.service\n新建同步节点在同步中间节点添加目录将读写密钥添加到本地同步目录中，并设置仅发送模式\n一些设备的哈希值\n\n\n  \n    Processor\n    System\n    SHA256\n    HASH\n  \n\n\n  \n    I5 13400\n    Win 10\n    1830.55\n    1063.48 \n  \n  \n    I3 12100\n    Debian 11\n    1912.26\n    1249.41\n  \n  \n    I3 12100F\n    Win 10\n    1787.52\n    1183.98\n  \n  \n    SD 870\n    Android\n    1445.29\n    886.36\n  \n  \n    RK 3588\n    Armbian\n    1203.18\n    668.67\n  \n  \n    R5 5600U\n    Win 10\n    1099.47\n    674\n  \n  \n    N5105\n    Debian 11\n    1081.38\n    637.36\n  \n  \n    SD 835\n    Android\n    971.19\n    437.26\n  \n  \n    SD 625\n    Android\n    655.78\n    241.92\n  \n  \n    E3 1231 V3\n    Win 10\n    363.26\n    313.75\n  \n  \n    ARMADA A3720\n    DSM7\n    311.87\n    90.52\n  \n\n\n","dateCreated":"2021-05-08T00:00:00+08:00","dateModified":"2023-07-11T21:45:14+08:00","datePublished":"2021-05-08T00:00:00+08:00","description":"硬盘有价，数据无价，本文介绍了一些备份软件","headline":"备份软件的使用","image":["../10000/Backups.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/1010/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/1010/","keywords":"Backups, Network","thumbnailUrl":"../10000/Backups.jpg"}</script>
+    <meta name="description" content="硬盘有价，数据无价，本文介绍了一些备份软件">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="备份软件的使用">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/1010/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="硬盘有价，数据无价，本文介绍了一些备份软件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-11T13:45:14.920Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Backups">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/1010/../10000/Backups.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/1010/../10000/Backups.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            备份软件的使用
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-05-08T00:00:00+08:00">
+	
+		    2021年 5月 08日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Software/">Software</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>硬盘有价，数据无价，本文介绍了一些备份软件</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E7%BD%91%E7%9B%98-amp-%E4%BA%91%E6%9C%8D%E5%8A%A1"><span class="toc-text">各种网盘&amp;云服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%BB%BANAS"><span class="toc-text">自建NAS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E8%BD%AF%E4%BB%B6"><span class="toc-text">备份软件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Syncthing%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">Syncthing的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E4%B8%8B%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">Linux下的安装与配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEsystemd%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="toc-text">设置systemd自启动</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Verysync%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">Verysync的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E5%AE%89%E8%A3%85"><span class="toc-text">Linux安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEsystemd%E8%87%AA%E5%90%AF%E5%8A%A8-1"><span class="toc-text">设置systemd自启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%90%8C%E6%AD%A5%E8%8A%82%E7%82%B9"><span class="toc-text">新建同步节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%AE%BE%E5%A4%87%E7%9A%84%E5%93%88%E5%B8%8C%E5%80%BC"><span class="toc-text">一些设备的哈希值</span></a></li></ol></li></ol>
+<hr>
+<p>无论是硬件损毁或丢失、软件误删或者中病毒都造成不可挽回的数据丢失。所以养成备份的好习惯十分重要，在个人数据越发重要的2022年，笔者总结一些具有备份功能软件。</p>
+<hr>
+<h3 id="各种网盘-amp-云服务"><a href="#各种网盘-amp-云服务" class="headerlink" title="各种网盘&amp;云服务"></a>各种网盘&amp;云服务</h3><p>现在国际国内各大厂都有自己的网盘，硬件、软件厂商也会在产品中针对的自己的用户群体来集成自己的云服务。<br>1.大容量+低速类网盘，用于备份冷数据或资源<br>最典型的是百度网盘，免费容量2TB，普通用户不仅限速100kB，而且到一定流量后限速10kB。百度网盘其实主打文件分享，文件审查+低下载速度就注定它不可能成为好的个人数据备份软件。甚至有同学和我吐槽把图片上传到百度网盘搜索就会推送类似的东西所以不敢用了。<br>2.小容量+高速，适合备份个人文件<br>腾讯微云的容量相比百度网盘小的多，速度确实比百度网盘快多了，速度已经比较适合存文件了。当然腾讯微云做的对于我来说用不成，因为搜索功能是废的，所以我转了阿里。<br>阿里网盘的容量不如百度网盘，但是容量比腾讯微云大多了，传输速度比微云更快，综合体验吊打微云，已经适合备份文件了。<br>3.同步网盘<br>坚果云是按月流量计费，免费上传1G下载3G，难免有点捉襟见肘，但对于只写写博客和Paper的我还是绰绰有余的，是我用过的唯一适配了高分屏的免费同步盘。在移动端有个坚果云Markdown编辑器，用起来很舒服。PS：笔者写网页用的就是坚果云，由于网页源代码都比较小，所以免费版流量的每月1GB给我随便写都造不完。<br>阿里网盘也有同步功能，但只对会员开放<br>微云同步助手，只提供Win版和Mac版，同步目录占用微云的空间，是独立的客户端，但看起来做的不如腾讯微云做的用心。<br>百度云也内置了同步网盘的服务，免费流量1G，没说上传还是下载，所以相比坚果云就没法用了，毕竟百度网盘做的真的非常垃圾。<br>4.集成网盘&#x2F;云服务<br>典型的例子是集成手机系统里的云服务，Apple的iCloud，miui等国产系统自带的云服务，用于同步手机里的相册、录音。<br>集成在网易云音乐里的网易音乐云盘，方便用户听歌(规避版权)，集成在WPS里的云盘也带给用户非常棒的体验。<br>5.无法使用的网盘<br>作为网盘，稳定性是很重要的，不稳定网盘最典型的是MicroSoft的OneDrive，此外还有因为被墙而无法使用的国外网盘，最典型的是大名鼎鼎的GoogleDrive和Dropbox</p>
+<hr>
+<h3 id="自建NAS"><a href="#自建NAS" class="headerlink" title="自建NAS"></a>自建NAS</h3><p>对于网盘已经满足不了的用户，可以自建NAS，群辉等老牌NAS厂商的方案已经十分成熟。<br>对于计算机能力较强，且喜欢折腾的用户来说，直接上Debian等Linux也不错</p>
+<hr>
+<h3 id="备份软件"><a href="#备份软件" class="headerlink" title="备份软件"></a>备份软件</h3><p>Syncthing&#x2F;Verysync：跨平台、带穿透、多设备、保持同步<br><a target="_blank" rel="noopener" href="https://freefilesync.org/download.php">FreeFileSync</a>可用于同一设备不同文件夹或者远程服务器上的文件改动检测与同步，本身提供Win、Linux、Mac三平台及源代码，综合来看应用场景应该是用U盘或者移动硬盘进行数据备份。</p>
+<hr>
+<h3 id="Syncthing的使用"><a href="#Syncthing的使用" class="headerlink" title="Syncthing的使用"></a>Syncthing的使用</h3><p>Syncthing是开源跨平台的基于p2p传输的备份软件，可用于Windows、Linux、MacOS、Andorid、群晖等设备间的备份，具有去中心化的特点，各个节点可以自由配置</p>
+<h4 id="Linux下的安装与配置"><a href="#Linux下的安装与配置" class="headerlink" title="Linux下的安装与配置"></a>Linux下的安装与配置</h4><p>假设Linux上的目录是&#x2F;app&#x2F;syncthing，用户为root<br>安装syncthing并写配置文件<br>先<a target="_blank" rel="noopener" href="https://syncthing.net/downloads/">下载</a>，后上传到服务器</p>
+<p>解压命令是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf syncthing-linux-arm64-v1.19.1.tar.gz</span><br></pre></td></tr></table></figure>
+<p>首先启动.&#x2F;syncthing，初始化完毕后按下Ctrl+C终止操作</p>
+<p>打开&#x2F;root&#x2F;.config&#x2F;syncthing&#x2F;config.xml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">把所有127.0.0.1:8384的&lt;address&gt;改为0.0.0.0:8384</span><br></pre></td></tr></table></figure>
+<h4 id="设置systemd自启动"><a href="#设置systemd自启动" class="headerlink" title="设置systemd自启动"></a>设置systemd自启动</h4><p>修改文件名称&#x2F;app&#x2F;syncthing&#x2F;etc&#x2F;linux-systemd&#x2F;system&#x2F;<a href="mailto:&#115;&#x79;&#x6e;&#x63;&#116;&#x68;&#x69;&#110;&#x67;&#64;&#114;&#x6f;&#x6f;&#x74;&#46;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#101;">&#115;&#x79;&#x6e;&#x63;&#116;&#x68;&#x69;&#110;&#x67;&#64;&#114;&#x6f;&#x6f;&#x74;&#46;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#101;</a></p>
+<p>拷贝到systemd文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp syncthing@root.service /etc/systemd/system/</span><br></pre></td></tr></table></figure>
+<p>修改<a href="mailto:&#115;&#x79;&#110;&#99;&#116;&#x68;&#105;&#110;&#103;&#64;&#x72;&#111;&#111;&#116;&#46;&#115;&#101;&#x72;&#118;&#105;&#99;&#101;">&#115;&#x79;&#110;&#99;&#116;&#x68;&#105;&#110;&#103;&#64;&#x72;&#111;&#111;&#116;&#46;&#115;&#101;&#x72;&#118;&#105;&#99;&#101;</a>内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/systemd/system/syncthing@root.service</span><br><span class="line">ExecStart=/app/syncthing/syncthing</span><br></pre></td></tr></table></figure>
+<p>使用命令启动服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable syncthing@root.service</span><br><span class="line">systemctl start syncthing@root.service</span><br></pre></td></tr></table></figure>
+<p>在控制端打开网页进行配置<br>创建文件夹后配制文件夹，等待扫描完成后可以开启共享发送给添加的设备</p>
+<h3 id="Verysync的使用"><a href="#Verysync的使用" class="headerlink" title="Verysync的使用"></a>Verysync的使用</h3><p>Win的配置目录是<br><code>C:\Users\你的用户名\AppData\Local\Verysync</code></p>
+<h4 id="Linux安装"><a href="#Linux安装" class="headerlink" title="Linux安装"></a>Linux安装</h4><p>Verysync可以直接看成syncthing换皮<br>注：2022年11月08日笔者测试官方命令行安装方案不可用<br>先<a target="_blank" rel="noopener" href="http://www.verysync.com/download.html">下载</a>，后上传到服务器<br>解压命令是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf syncthing-linux-arm64-v1.19.1.tar.gz</span><br></pre></td></tr></table></figure>
+<p>首先启动.&#x2F;syncthing，初始化完毕后使用端口转发把127.0.0.1:8886转发到其他端口，打开网页端进行配置</p>
+<h4 id="设置systemd自启动-1"><a href="#设置systemd自启动-1" class="headerlink" title="设置systemd自启动"></a>设置systemd自启动</h4><p>修改文件名称&#x2F;app&#x2F;verysync&#x2F;etc&#x2F;linux-systemd&#x2F;system&#x2F;<a href="mailto:&#118;&#101;&#114;&#x79;&#115;&#x79;&#110;&#x63;&#x40;&#114;&#x6f;&#x6f;&#116;&#46;&#x73;&#101;&#114;&#x76;&#105;&#x63;&#101;">&#118;&#101;&#114;&#x79;&#115;&#x79;&#110;&#x63;&#x40;&#114;&#x6f;&#x6f;&#116;&#46;&#x73;&#101;&#114;&#x76;&#105;&#x63;&#101;</a></p>
+<p>拷贝到systemd文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp verysync@root.service /etc/systemd/system/</span><br></pre></td></tr></table></figure>
+<p>修改<a href="mailto:&#x73;&#121;&#110;&#99;&#x74;&#104;&#105;&#x6e;&#103;&#64;&#x72;&#111;&#x6f;&#116;&#x2e;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#x65;">&#x73;&#121;&#110;&#99;&#x74;&#104;&#105;&#x6e;&#103;&#64;&#x72;&#111;&#x6f;&#116;&#x2e;&#x73;&#x65;&#x72;&#x76;&#105;&#99;&#x65;</a>内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/systemd/system/verysync@root.service</span><br><span class="line">ExecStart=/app/verysync/verysync</span><br></pre></td></tr></table></figure>
+<p>使用命令启动服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable verysync@root.service</span><br><span class="line">systemctl start verysync@root.service</span><br></pre></td></tr></table></figure>
+<h4 id="新建同步节点"><a href="#新建同步节点" class="headerlink" title="新建同步节点"></a>新建同步节点</h4><p>在同步中间节点添加目录<br>将读写密钥添加到本地同步目录中，并设置仅发送模式</p>
+<h4 id="一些设备的哈希值"><a href="#一些设备的哈希值" class="headerlink" title="一些设备的哈希值"></a>一些设备的哈希值</h4><div style="overflow-x:auto;white-space:nowrap;">
+<table style="text-align:center;">
+<thead>
+  <tr>
+    <th>Processor</th>
+    <th>System</th>
+    <th>SHA256</th>
+    <th>HASH</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>I5 13400</td>
+    <td>Win 10</td>
+    <td>1830.55</td>
+    <td>1063.48 </td>
+  </tr>
+  <tr>
+    <td>I3 12100</td>
+    <td>Debian 11</td>
+    <td>1912.26</td>
+    <td>1249.41</td>
+  </tr>
+  <tr>
+    <td>I3 12100F</td>
+    <td>Win 10</td>
+    <td>1787.52</td>
+    <td>1183.98</td>
+  </tr>
+  <tr>
+    <td>SD 870</td>
+    <td>Android</td>
+    <td>1445.29</td>
+    <td>886.36</td>
+  </tr>
+  <tr>
+    <td>RK 3588</td>
+    <td>Armbian</td>
+    <td>1203.18</td>
+    <td>668.67</td>
+  </tr>
+  <tr>
+    <td>R5 5600U</td>
+    <td>Win 10</td>
+    <td>1099.47</td>
+    <td>674</td>
+  </tr>
+  <tr>
+    <td>N5105</td>
+    <td>Debian 11</td>
+    <td>1081.38</td>
+    <td>637.36</td>
+  </tr>
+  <tr>
+    <td>SD 835</td>
+    <td>Android</td>
+    <td>971.19</td>
+    <td>437.26</td>
+  </tr>
+  <tr>
+    <td>SD 625</td>
+    <td>Android</td>
+    <td>655.78</td>
+    <td>241.92</td>
+  </tr>
+  <tr>
+    <td>E3 1231 V3</td>
+    <td>Win 10</td>
+    <td>363.26</td>
+    <td>313.75</td>
+  </tr>
+  <tr>
+    <td>ARMADA A3720</td>
+    <td>DSM7</td>
+    <td>311.87</td>
+    <td>90.52</td>
+  </tr>
+</tbody>
+</table>
+</div>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Backups/" rel="tag">Backups</a> <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Network/" rel="tag">Network</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4016/"
+                    data-tooltip="Synology初始化"
+                    aria-label="上一篇: Synology初始化"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/1004/"
+                    data-tooltip="微生物腐蚀相关"
+                    aria-label="下一篇: 微生物腐蚀相关"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4016/"
+                    data-tooltip="Synology初始化"
+                    aria-label="上一篇: Synology初始化"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/1004/"
+                    data-tooltip="微生物腐蚀相关"
+                    aria-label="下一篇: 微生物腐蚀相关"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

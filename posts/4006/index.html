@@ -1,0 +1,582 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>跨平台下载器的使用 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍了一些开源跨平台的下载器\n\n\n\n\nQbittorrent1apt-get install qbittorrent-nox\n启动程序，WebUI默认端口是8080，账号是admin密码是adminadmin\n1qbittorrent-nox -d\n修改下载目录、对IP子网白名单中的客户端跳过身份验证\n12127.0.0.1/32192.168.192.0/24\n高级中设置：磁盘缓存、允许来自同一 IP 地址的多个连接如需要nginx代理，取消 启用“点击劫持”保护和启用跨站请求伪造 (CSRF) 保护，并添加配置\n123location /vs/ &#123;        proxy_pass   http://127.0.0.1:8080/;&#125;\n自启动\n1234567891011121314nano  /etc/systemd/system/qbittorrent-nox.service[Unit]Description=qBittorrent-noxAfter=network.target[Service]User=rootType=forkingRemainAfterExit=yesExecStart=/usr/bin/qbittorrent-nox -d[Install]WantedBy=multi-user.target\n控制服务\n12systemctl start qbittorrent-noxsystemctl enable qbittorrent-nox\n\nTransmission安装\n1apt-get install transmission-daemon\n停止服务\n1service transmission-daemon stop\n编辑配置文件\n1nano /var/lib/transmission-daemon/info/settings.json\n修改download-dir、incomplete-dir、rpc-username、rpc-password、rpc-whitelist-enabled启动\n1service transmission-daemon restart\n\nAria2安装与配置Linux安装\n1apt-get install aria2\n\nWindows下载写配置文件和aria2.session\n1234mkdir -p ~/.aria2/\t\t\t//其实这个文件夹aria2会自己创建nano  ~/.aria2/aria2.conf\t\t//创建aria2的配置文件touch ~/.aria2/aria2.session\t\t//创建aria2的session文件chmod 777 ~/.aria2/aria2.session\t\t//赋予aria2写session文件的权限\n配置文件内容\n1234567891011121314151617181920212223# 下载相关disk-cache=256M\t\t\t\t//下载占用的最大内存dir=/app/scihub/store/\t\t\t//下载目录auto-file-renaming=false\t\t\t//允许文件重命名continue=true\t\t\t\t//断点续传split=4\t\t\t\t\t//单个任务最大线程数max-concurrent-downloads=2\t\t//同时下载任务的个数# 进度保存相关input-file=/root/.aria2/aria2.session\t//session目录save-session=/root/.aria2/aria2.session\t//session目录save-session-interval=30\t\t\t//session保存间隔# RPC相关enable-rpc=true\t\t\t\t//开启RPCrpc-listen-all=true\t\t\t//监听所有端口rpc-allow-origin-all=true\t\t//允许所有iprpc-secret=123\t\t\t\t//RPC密码\t\t\t# 百度网盘限速相关#split=1#max-connection-per-server=1#max-overall-download-limit=100k\n启动命令行\n1aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D force-save=true\n配置web管理页面下载AriaNg后解压丢到web服务器里就行\n\n设置自启动在init.d目录下创建启动文件\n1nano /etc/init.d/aria2c \n配置文件内容\n1234567891011121314151617181920212223242526272829#!/bin/sh### BEGIN INIT INFO# Provides: aria2# Required-Start: $remote_fs $network# Required-Stop: $remote_fs $network# Default-Start: 2 3 4 5# Default-Stop: 0 1 6# Short-Description: aria2 downloader### END INIT INFOcase &quot;$1&quot; instart) echo -n &quot;已开启Aria2c&quot; aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D;;stop) echo -n &quot;已关闭Aria2c&quot; killall aria2c;;restart) killall aria2c aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D;;esacexit\n控制服务\n1234567chmod 755 /etc/init.d/aria2c\t//修改启动脚本文件权限update-rc.d aria2c defaults\t//添加aria2c服务到开机服务systemctl enable aria2c\t//服务自启/lib/systemd/systemd-sysv-install enable aria2cservice aria2c start\t\t//启动服务service aria2c stop\t\t//停止服务service aria2c restart\t\t//重启服务\n进程查找\n1pstree -aup | grep aria2\n可执行文件位置查找\n1whereis aria2c\n设置下载完毕运行脚本\n1on-download-complete=/home/public/Download/1.sh\n在脚本中修改下载后的文件拥有者\n1chown -R nobody /home/public/Download\n\nBitTorrent下载没速度的解决方法1.添加trackerslist2.下载DHT.dat文件\n","dateCreated":"2020-03-28T00:00:00+08:00","dateModified":"2023-07-13T11:17:13+08:00","datePublished":"2020-03-28T00:00:00+08:00","description":"本文介绍了一些开源跨平台的下载器","headline":"跨平台下载器的使用","image":["../10000/Download.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/4006/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/4006/","keywords":"Network","thumbnailUrl":"../10000/Download.jpg"}</script>
+    <meta name="description" content="本文介绍了一些开源跨平台的下载器">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="跨平台下载器的使用">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/4006/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍了一些开源跨平台的下载器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-13T03:17:13.622Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/4006/../10000/Download.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/4006/../10000/Download.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            跨平台下载器的使用
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-03-28T00:00:00+08:00">
+	
+		    2020年 3月 28日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Software/">Software</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍了一些开源跨平台的下载器</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Qbittorrent"><span class="toc-text">Qbittorrent</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Transmission"><span class="toc-text">Transmission</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Aria2"><span class="toc-text">Aria2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-text">安装与配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="toc-text">设置自启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BitTorrent%E4%B8%8B%E8%BD%BD%E6%B2%A1%E9%80%9F%E5%BA%A6%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="toc-text">BitTorrent下载没速度的解决方法</span></a></li></ol></li></ol>
+<hr>
+<h3 id="Qbittorrent"><a href="#Qbittorrent" class="headerlink" title="Qbittorrent"></a>Qbittorrent</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install qbittorrent-nox</span><br></pre></td></tr></table></figure>
+<p>启动程序，WebUI默认端口是8080，账号是admin密码是adminadmin</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qbittorrent-nox -d</span><br></pre></td></tr></table></figure>
+<p>修改下载目录、对IP子网白名单中的客户端跳过身份验证</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1/32</span><br><span class="line">192.168.192.0/24</span><br></pre></td></tr></table></figure>
+<p>高级中设置：磁盘缓存、允许来自同一 IP 地址的多个连接<br>如需要nginx代理，取消 <code>启用“点击劫持”保护和启用跨站请求伪造 (CSRF) 保护</code>，并添加配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location /vs/ &#123;</span><br><span class="line">        proxy_pass   http://127.0.0.1:8080/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>自启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">nano  /etc/systemd/system/qbittorrent-nox.service</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=qBittorrent-nox</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=root</span><br><span class="line">Type=forking</span><br><span class="line">RemainAfterExit=yes</span><br><span class="line">ExecStart=/usr/bin/qbittorrent-nox -d</span><br><span class="line">[Install]</span><br><span class="line"></span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<p>控制服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start qbittorrent-nox</span><br><span class="line">systemctl enable qbittorrent-nox</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Transmission"><a href="#Transmission" class="headerlink" title="Transmission"></a>Transmission</h3><p>安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install transmission-daemon</span><br></pre></td></tr></table></figure>
+<p>停止服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service transmission-daemon stop</span><br></pre></td></tr></table></figure>
+<p>编辑配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /var/lib/transmission-daemon/info/settings.json</span><br></pre></td></tr></table></figure>
+<p>修改download-dir、incomplete-dir、rpc-username、rpc-password、rpc-whitelist-enabled<br>启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service transmission-daemon restart</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Aria2"><a href="#Aria2" class="headerlink" title="Aria2"></a>Aria2</h3><h4 id="安装与配置"><a href="#安装与配置" class="headerlink" title="安装与配置"></a>安装与配置</h4><p>Linux安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install aria2</span><br></pre></td></tr></table></figure>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://aria2.github.io/">Windows下载</a><br>写配置文件和aria2.session</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/.aria2/			//其实这个文件夹aria2会自己创建</span><br><span class="line">nano  ~/.aria2/aria2.conf		//创建aria2的配置文件</span><br><span class="line">touch ~/.aria2/aria2.session		//创建aria2的session文件</span><br><span class="line">chmod 777 ~/.aria2/aria2.session		//赋予aria2写session文件的权限</span><br></pre></td></tr></table></figure>
+<p>配置文件内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 下载相关</span><br><span class="line">disk-cache=256M				//下载占用的最大内存</span><br><span class="line">dir=/app/scihub/store/			//下载目录</span><br><span class="line">auto-file-renaming=false			//允许文件重命名</span><br><span class="line">continue=true				//断点续传</span><br><span class="line">split=4					//单个任务最大线程数</span><br><span class="line">max-concurrent-downloads=2		//同时下载任务的个数</span><br><span class="line"></span><br><span class="line"># 进度保存相关</span><br><span class="line">input-file=/root/.aria2/aria2.session	//session目录</span><br><span class="line">save-session=/root/.aria2/aria2.session	//session目录</span><br><span class="line">save-session-interval=30			//session保存间隔</span><br><span class="line"></span><br><span class="line"># RPC相关</span><br><span class="line">enable-rpc=true				//开启RPC</span><br><span class="line">rpc-listen-all=true			//监听所有端口</span><br><span class="line">rpc-allow-origin-all=true		//允许所有ip</span><br><span class="line">rpc-secret=123				//RPC密码</span><br><span class="line">			</span><br><span class="line"># 百度网盘限速相关</span><br><span class="line">#split=1</span><br><span class="line">#max-connection-per-server=1</span><br><span class="line">#max-overall-download-limit=100k</span><br></pre></td></tr></table></figure>
+<p>启动命令行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D force-save=true</span><br></pre></td></tr></table></figure>
+<p>配置web管理页面<br>下载<a target="_blank" rel="noopener" href="https://github.com/mayswind/AriaNg/releases/">AriaNg</a>后解压丢到web服务器里就行</p>
+<hr>
+<h4 id="设置自启动"><a href="#设置自启动" class="headerlink" title="设置自启动"></a>设置自启动</h4><p>在init.d目录下创建启动文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/init.d/aria2c </span><br></pre></td></tr></table></figure>
+<p>配置文件内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line"></span><br><span class="line">### BEGIN INIT INFO</span><br><span class="line"># Provides: aria2</span><br><span class="line"># Required-Start: $remote_fs $network</span><br><span class="line"># Required-Stop: $remote_fs $network</span><br><span class="line"># Default-Start: 2 3 4 5</span><br><span class="line"># Default-Stop: 0 1 6</span><br><span class="line"># Short-Description: aria2 downloader</span><br><span class="line">### END INIT INFO</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">start)</span><br><span class="line"></span><br><span class="line"> echo -n &quot;已开启Aria2c&quot;</span><br><span class="line"> aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D</span><br><span class="line">;;</span><br><span class="line">stop)</span><br><span class="line"></span><br><span class="line"> echo -n &quot;已关闭Aria2c&quot;</span><br><span class="line"> killall aria2c</span><br><span class="line">;;</span><br><span class="line">restart)</span><br><span class="line"></span><br><span class="line"> killall aria2c</span><br><span class="line"> aria2c --conf-path=&quot;/root/.aria2/aria2.conf&quot; -D</span><br><span class="line">;;</span><br><span class="line">esac</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<p>控制服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 /etc/init.d/aria2c	//修改启动脚本文件权限</span><br><span class="line">update-rc.d aria2c defaults	//添加aria2c服务到开机服务</span><br><span class="line">systemctl enable aria2c	//服务自启</span><br><span class="line">/lib/systemd/systemd-sysv-install enable aria2c</span><br><span class="line">service aria2c start		//启动服务</span><br><span class="line">service aria2c stop		//停止服务</span><br><span class="line">service aria2c restart		//重启服务</span><br></pre></td></tr></table></figure>
+<p>进程查找</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pstree -aup | grep aria2</span><br></pre></td></tr></table></figure>
+<p>可执行文件位置查找</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whereis aria2c</span><br></pre></td></tr></table></figure>
+<p>设置下载完毕运行脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on-download-complete=/home/public/Download/1.sh</span><br></pre></td></tr></table></figure>
+<p>在脚本中修改下载后的文件拥有者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R nobody /home/public/Download</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="BitTorrent下载没速度的解决方法"><a href="#BitTorrent下载没速度的解决方法" class="headerlink" title="BitTorrent下载没速度的解决方法"></a><a target="_blank" rel="noopener" href="https://www.haah.net/archives/5240.html">BitTorrent下载没速度的解决方法</a></h4><p>1.添加<a target="_blank" rel="noopener" href="https://github.com/ngosang/trackerslist">trackerslist</a><br>2.下载DHT.dat文件</p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Network/" rel="tag">Network</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2002/"
+                    data-tooltip="使用量子化学软件"
+                    aria-label="上一篇: 使用量子化学软件"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2015/"
+                    data-tooltip="搭建代理服务器"
+                    aria-label="下一篇: 搭建代理服务器"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2002/"
+                    data-tooltip="使用量子化学软件"
+                    aria-label="上一篇: 使用量子化学软件"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2015/"
+                    data-tooltip="搭建代理服务器"
+                    aria-label="下一篇: 搭建代理服务器"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

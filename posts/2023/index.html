@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>各种网络传输协议 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍了各种各样的网络传输协议\n\n\n\n\n无线传输协议无线传输协议\n\n\n  \n    标准\n    年份\n    单通道最大速率\n    频段\n    空间流\n  \n\n\n  \n    IEEE 802.11\n    1997\n    2Mbit/s\n    2.4GHz\n    1×1\n  \n  \n    IEEE 802.11a\n    1999\n    54Mbit/s\n    5GHz\n    1×1\n  \n  \n    IEEE 802.11b\n    1999\n    11Mbit/s\n    2.4GHz\n    1×1\n  \n  \n    IEEE 802.11g\n    2003\n    54Mbit/s\n    2.4GHz\n    1×1\n  \n  \n    IEEE 802.11n\n    2009\n    150Mbit/s(20Mhz)\n    2.4GHz\n    4×4\n  \n  \n    IEEE 802.11ac\n    2012\n    867Mbit/s(160MHz)\n    5GHz\n    8×8\n  \n  \n    IEEE 802.11ax\n    2019\n    1201Mbit/s(160MHz)\n    2.4GHz&5GHz\n    8×8\n  \n\n\n\n\n无线漫游协议802.11k：解决何时漫游问题802.11v：解决漫游到何处问题802.11r：解决如何关重关联问题有关无线mesh漫游的机器，请查看无线路由器支持漫游协议k、v、r查询库查看AP支持：打开Winfi-&gt;Amendments选项很清楚了查看网卡支持：管理员运行Powershellnetsh wlan show wirelesscapabilities\n123DOT11k 邻居报告：802.11k快速转换：802.11kBSS 转换：802.11v\n无线其他协议OFDMA：更好的子载波进行数据传输MU-MIMO：一个基站同时与多个用户同时进行通信，详见史上最全面的MU-MIMO实测\n\n有线以太网协议有线以太网传输协议\n\n\n  \n    Interface\n    Standard\n    Year\n    Speed(Mib/s)\n    Bandwidth(MHz)\n    Cablereq.per100m\n  \n\n\n  \n    10BASE-T\n    802.3i\n    1990\n    10\n    10\n    Cat3\n  \n  \n    100BASE-T\n    802.3u\n    1995\n    100\n    31.25\n    Cat4\n  \n  \n    1000BASE-X\n    802.3z\n    1998\n    1000\n    \n    -\n  \n  \n    1000BASE-T\n    802.3ab\n    1999\n    1000\n    62.5\n    Cat5\n  \n  \n    10GBASE-SR\n    802.3ae\n    2002\n    10000\n    \n    -\n  \n  \n    10GBASE-T\n    802.3an\n    2006\n    10000\n    400\n    Cat6\n  \n  \n    40GBASE-T\n    802.3ba\n    2015\n    40000\n    \n    -\n  \n  \n    2.5GBASE-T\n    802.3bz\n    2016\n    2500\n    100\n    Cat5e\n  \n  \n    5GBASE-T\n    802.3bz\n    2016\n    5000\n    200\n    Cat6\n  \n  \n    25GBASE-T\n    802.3bq\n    2016\n    25000\n    1000\n    Cat8\n  \n  \n    25GBASE-T\n    802.3by\n    2016\n    25000\n    \n    -\n  \n  \n    40GBASE-T\n    802.3bq\n    2016\n    40000\n    1600\n    Cat8\n  \n\n\n\n\n有线以太网功能IEEE 802.3af，2003，以太网供电（15.4 W）IEEE 802.3at标准，2009，以太网供电增强功能（25.5 W）IEEE 802.3az，2010，节能以太网802.3bt，2018，采用全部4对平衡双绞线（4PPoE）的第三代以太网供电，功率高达100 W，包括10GBASE-T，更低的待机功率和特定的增强功能，以支持物联网应用（如照明，传感器，楼宇自动化）。\n\nNat协议全锥形NAT：全锥形NAT的IP、端口都不受限。只要客户端由内到外打通一个洞之后（NatIP:NatPort -&gt; A:P1），其他IP的主机(B)或端口(A:P2)都可以使用这个洞发送数据到客户端。映射关系为：Client-&gt;NatIP:NatPort-&gt;Any，即任何外部主机都可通过NatIP:NatPort发送数据到Clietn上。受限锥形NAT：受限锥形NAT的IP受限，端口不受限。当客户端由内到外打通一个洞之后(NatIP:NatPort -&gt; A:P1)，A机器可以使用他的其他端口（P2）主动连接客户端，但B机器则不被允许。映射关系为：Client-&gt; NatIP:NatPort-&gt;A，即只有来自A的数据包才能通过NatIP:NatPort发送到Client上。端口受限锥型NAT：端口受限锥型NAT的IP、端口都受限。返回的数据只接受曾经打洞成功的对象（A:P1），由A:P2、B:P1发起的数据将不被NatIP:NatPort接收。映射关系为：Client-&gt;NatIP:NatPort-&gt;A:P1，即只有来自A:P1的数据才可通过NatIP:NatPort发送到Client上。对称型NAT：对称型NAT具有端口受限锥型的受限特性。但更重要的是，他对每个外部主机或端口的会话都会映射为不同的端口（洞）。只有来自相同的内部地址（IP:PORT）并且发送到相同外部地址（X:x）的请求，在NAT上才映射为相同的外网端口，即相同的映射。一个外部地址（X:x）对应一个NAT上的映射，每个映射仅接收来自他绑定的外部地址的数据。关键点在到不同的目的地(目的IP:目的端口)分配不同的映射地址(IP:Port)\n\n\n\n  \n    \n    全锥型\n    受限锥型\n    端口受限锥型\n    对称型\n  \n\n\n  \n    全锥型\n    YES\n    YES\n    YES\n    YES\n  \n  \n    受限锥型\n    YES\n    YES\n    YES\n    YES\n  \n  \n    端口受限锥型\n    YES\n    YES\n    YES\n    NO\n  \n  \n    对称型\n    YES\n    YES\n    NO\n    NO\n  \n\n\n\n\n\nTCP&#x2F;IP协议分别介绍TCP&#x2F;IP协议中的四个层次。应用层：应用层是TCP&#x2F;IP协议的第一层，是直接为应用进程提供服务的。（1）对不同种类的应用程序它们会根据自己的需要来使用应用层的不同协议，邮件传输应用使用了SMTP协议、万维网应用使用了HTTP协议、远程登录服务应用使用了有TELNET协议。（2）应用层还能加密、解密、格式化数据。（3）应用层可以建立或解除与其他节点的联系，这样可以充分节省网络资源。运输层：作为TCP&#x2F;IP协议的第二层，运输层在整个TCP&#x2F;IP协议中起到了中流砥柱的作用。且在运输层中，TCP和UDP也同样起到了中流砥柱的作用。网络层：网络层在TCP&#x2F;IP协议中的位于第三层。在TCP&#x2F;IP协议中网络层可以进行网络连接的建立和终止以及IP地址的寻找等功能。网络接口层：在TCP&#x2F;IP协议中，网络接口层位于第四层。由于网络接口层兼并了物理层和数据链路层所以，网络接口层既是传输数据的物理媒介，也可以为网络层提供一条准确无误的线路。WOL协议采用UDP传输\n\n网络传输速度测试访问Speedtest的仓库并下载解压，丢到带php的web服务器里至于怎么搭建服务器，请参考搭建Web服务器访问http:&#x2F;&#x2F;你的ip&#x2F;speedtest&#x2F;example-singleServer-full.html，点击Start开始测速，测试完毕就能得到传输数据的实际带宽了\n\n参考百度百科.802.11百度百科.802.3百度百科.TCP&#x2F;IP协议\n","dateCreated":"2020-08-14T00:00:00+08:00","dateModified":"2023-07-14T18:10:11+08:00","datePublished":"2020-08-14T00:00:00+08:00","description":"本文介绍了各种各样的网络传输协议","headline":"各种网络传输协议","image":["cover.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2023/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2023/","keywords":"Network, Server","thumbnailUrl":"cover.jpg"}</script>
+    <meta name="description" content="本文介绍了各种各样的网络传输协议">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="各种网络传输协议">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2023/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍了各种各样的网络传输协议">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2023/01.jpg">
+<meta property="article:published_time" content="2020-08-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-14T10:10:11.207Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Server">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://panxiuwen.github.io/pa/posts/2023/01.jpg">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2023/cover.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2023/cover.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            各种网络传输协议
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-08-14T00:00:00+08:00">
+	
+		    2020年 8月 14日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Technology/">Technology</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍了各种各样的网络传输协议</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="toc-text">无线传输协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE-1"><span class="toc-text">无线传输协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E6%BC%AB%E6%B8%B8%E5%8D%8F%E8%AE%AE"><span class="toc-text">无线漫游协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%BA%BF%E5%85%B6%E4%BB%96%E5%8D%8F%E8%AE%AE"><span class="toc-text">无线其他协议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E7%BA%BF%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE"><span class="toc-text">有线以太网协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E7%BA%BF%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="toc-text">有线以太网传输协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E7%BA%BF%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8A%9F%E8%83%BD"><span class="toc-text">有线以太网功能</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nat%E5%8D%8F%E8%AE%AE"><span class="toc-text">Nat协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP-x2F-IP%E5%8D%8F%E8%AE%AE"><span class="toc-text">TCP&#x2F;IP协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E4%BC%A0%E8%BE%93%E9%80%9F%E5%BA%A6%E6%B5%8B%E8%AF%95"><span class="toc-text">网络传输速度测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+<hr>
+<h3 id="无线传输协议"><a href="#无线传输协议" class="headerlink" title="无线传输协议"></a>无线传输协议</h3><h4 id="无线传输协议-1"><a href="#无线传输协议-1" class="headerlink" title="无线传输协议"></a>无线传输协议</h4><div style="overflow-x:auto;white-space:nowrap;">
+<table style="text-align:center;">
+<thead>
+  <tr>
+    <th>标准</th>
+    <th>年份</th>
+    <th>单通道最大速率</th>
+    <th>频段</th>
+    <th>空间流</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>IEEE 802.11</td>
+    <td>1997</td>
+    <td>2Mbit/s</td>
+    <td>2.4GHz</td>
+    <td>1×1</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11a</td>
+    <td>1999</td>
+    <td>54Mbit/s</td>
+    <td>5GHz</td>
+    <td>1×1</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11b</td>
+    <td>1999</td>
+    <td>11Mbit/s</td>
+    <td>2.4GHz</td>
+    <td>1×1</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11g</td>
+    <td>2003</td>
+    <td>54Mbit/s</td>
+    <td>2.4GHz</td>
+    <td>1×1</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11n</td>
+    <td>2009</td>
+    <td>150Mbit/s(20Mhz)</td>
+    <td>2.4GHz</td>
+    <td>4×4</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11ac</td>
+    <td>2012</td>
+    <td>867Mbit/s(160MHz)</td>
+    <td>5GHz</td>
+    <td>8×8</td>
+  </tr>
+  <tr>
+    <td>IEEE 802.11ax</td>
+    <td>2019</td>
+    <td>1201Mbit/s(160MHz)</td>
+    <td>2.4GHz&5GHz</td>
+    <td>8×8</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<h4 id="无线漫游协议"><a href="#无线漫游协议" class="headerlink" title="无线漫游协议"></a>无线漫游协议</h4><p>802.11k：解决何时漫游问题<br>802.11v：解决漫游到何处问题<br>802.11r：解决如何关重关联问题<br>有关无线mesh漫游的机器，请查看<a target="_blank" rel="noopener" href="https://www.acwifi.net/9909.html">无线路由器支持漫游协议k、v、r查询库</a><br>查看AP支持：打开Winfi-&gt;Amendments选项很清楚了<br>查看网卡支持：管理员运行Powershell<code>netsh wlan show wirelesscapabilities</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DOT11k 邻居报告：802.11k</span><br><span class="line">快速转换：802.11k</span><br><span class="line">BSS 转换：802.11v</span><br></pre></td></tr></table></figure>
+<h4 id="无线其他协议"><a href="#无线其他协议" class="headerlink" title="无线其他协议"></a>无线其他协议</h4><p>OFDMA：更好的子载波进行数据传输<br>MU-MIMO：一个基站同时与多个用户同时进行通信，详见<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/drgpSZK3UNbwP8s30yp8LQ">史上最全面的MU-MIMO实测</a></p>
+<hr>
+<h3 id="有线以太网协议"><a href="#有线以太网协议" class="headerlink" title="有线以太网协议"></a>有线以太网协议</h3><h4 id="有线以太网传输协议"><a href="#有线以太网传输协议" class="headerlink" title="有线以太网传输协议"></a>有线以太网传输协议</h4><div style="overflow-x:auto;white-space:nowrap;">
+<table style="text-align:center;">
+<thead>
+  <tr>
+    <th>Interface</th>
+    <th>Standard</th>
+    <th>Year</th>
+    <th>Speed(Mib/s)</th>
+    <th>Bandwidth(MHz)</th>
+    <th>Cablereq.per100m</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>10BASE-T</td>
+    <td>802.3i</td>
+    <td>1990</td>
+    <td>10</td>
+    <td>10</td>
+    <td>Cat3</td>
+  </tr>
+  <tr>
+    <td>100BASE-T</td>
+    <td>802.3u</td>
+    <td>1995</td>
+    <td>100</td>
+    <td>31.25</td>
+    <td>Cat4</td>
+  </tr>
+  <tr>
+    <td>1000BASE-X</td>
+    <td>802.3z</td>
+    <td>1998</td>
+    <td>1000</td>
+    <td></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>1000BASE-T</td>
+    <td>802.3ab</td>
+    <td>1999</td>
+    <td>1000</td>
+    <td>62.5</td>
+    <td>Cat5</td>
+  </tr>
+  <tr>
+    <td>10GBASE-SR</td>
+    <td>802.3ae</td>
+    <td>2002</td>
+    <td>10000</td>
+    <td></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>10GBASE-T</td>
+    <td>802.3an</td>
+    <td>2006</td>
+    <td>10000</td>
+    <td>400</td>
+    <td>Cat6</td>
+  </tr>
+  <tr>
+    <td>40GBASE-T</td>
+    <td>802.3ba</td>
+    <td>2015</td>
+    <td>40000</td>
+    <td></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>2.5GBASE-T</td>
+    <td>802.3bz</td>
+    <td>2016</td>
+    <td>2500</td>
+    <td>100</td>
+    <td>Cat5e</td>
+  </tr>
+  <tr>
+    <td>5GBASE-T</td>
+    <td>802.3bz</td>
+    <td>2016</td>
+    <td>5000</td>
+    <td>200</td>
+    <td>Cat6</td>
+  </tr>
+  <tr>
+    <td>25GBASE-T</td>
+    <td>802.3bq</td>
+    <td>2016</td>
+    <td>25000</td>
+    <td>1000</td>
+    <td>Cat8</td>
+  </tr>
+  <tr>
+    <td>25GBASE-T</td>
+    <td>802.3by</td>
+    <td>2016</td>
+    <td>25000</td>
+    <td></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>40GBASE-T</td>
+    <td>802.3bq</td>
+    <td>2016</td>
+    <td>40000</td>
+    <td>1600</td>
+    <td>Cat8</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<h4 id="有线以太网功能"><a href="#有线以太网功能" class="headerlink" title="有线以太网功能"></a>有线以太网功能</h4><p>IEEE 802.3af，2003，以太网供电（15.4 W）<br>IEEE 802.3at标准，2009，以太网供电增强功能（25.5 W）<br>IEEE 802.3az，2010，节能以太网<br>802.3bt，2018，采用全部4对平衡双绞线（4PPoE）的第三代以太网供电，功率高达100 W，包括10GBASE-T，更低的待机功率和特定的增强功能，以支持物联网应用（如照明，传感器，楼宇自动化）。</p>
+<hr>
+<h3 id="Nat协议"><a href="#Nat协议" class="headerlink" title="Nat协议"></a>Nat协议</h3><p>全锥形NAT：全锥形NAT的IP、端口都不受限。只要客户端由内到外打通一个洞之后（NatIP:NatPort -&gt; A:P1），其他IP的主机(B)或端口(A:P2)都可以使用这个洞发送数据到客户端。映射关系为：Client-&gt;NatIP:NatPort-&gt;Any，即任何外部主机都可通过NatIP:NatPort发送数据到Clietn上。<br>受限锥形NAT：受限锥形NAT的IP受限，端口不受限。当客户端由内到外打通一个洞之后(NatIP:NatPort -&gt; A:P1)，A机器可以使用他的其他端口（P2）主动连接客户端，但B机器则不被允许。映射关系为：Client-&gt; NatIP:NatPort-&gt;A，即只有来自A的数据包才能通过NatIP:NatPort发送到Client上。<br>端口受限锥型NAT：端口受限锥型NAT的IP、端口都受限。返回的数据只接受曾经打洞成功的对象（A:P1），由A:P2、B:P1发起的数据将不被NatIP:NatPort接收。映射关系为：Client-&gt;NatIP:NatPort-&gt;A:P1，即只有来自A:P1的数据才可通过NatIP:NatPort发送到Client上。<br>对称型NAT：对称型NAT具有端口受限锥型的受限特性。但更重要的是，他对每个外部主机或端口的会话都会映射为不同的端口（洞）。只有来自相同的内部地址（IP:PORT）并且发送到相同外部地址（X:x）的请求，在NAT上才映射为相同的外网端口，即相同的映射。一个外部地址（X:x）对应一个NAT上的映射，每个映射仅接收来自他绑定的外部地址的数据。关键点在到不同的目的地(目的IP:目的端口)分配不同的映射地址(IP:Port)</p>
+<div style="overflow-x:auto;white-space:nowrap;">
+<table style="text-align:center;">
+<thead>
+  <tr>
+    <th></th>
+    <th>全锥型</th>
+    <th>受限锥型</th>
+    <th>端口受限锥型</th>
+    <th>对称型</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>全锥型</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>YES</td>
+  </tr>
+  <tr>
+    <td>受限锥型</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>YES</td>
+  </tr>
+  <tr>
+    <td>端口受限锥型</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>NO</td>
+  </tr>
+  <tr>
+    <td>对称型</td>
+    <td>YES</td>
+    <td>YES</td>
+    <td>NO</td>
+    <td>NO</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<hr>
+<h3 id="TCP-x2F-IP协议"><a href="#TCP-x2F-IP协议" class="headerlink" title="TCP&#x2F;IP协议"></a>TCP&#x2F;IP协议</h3><p>分别介绍TCP&#x2F;IP协议中的四个层次。<br>应用层：应用层是TCP&#x2F;IP协议的第一层，是直接为应用进程提供服务的。<br>（1）对不同种类的应用程序它们会根据自己的需要来使用应用层的不同协议，邮件传输应用使用了SMTP协议、万维网应用使用了HTTP协议、远程登录服务应用使用了有TELNET协议。<br>（2）应用层还能加密、解密、格式化数据。<br>（3）应用层可以建立或解除与其他节点的联系，这样可以充分节省网络资源。<br>运输层：作为TCP&#x2F;IP协议的第二层，运输层在整个TCP&#x2F;IP协议中起到了中流砥柱的作用。且在运输层中，TCP和UDP也同样起到了中流砥柱的作用。<br>网络层：网络层在TCP&#x2F;IP协议中的位于第三层。在TCP&#x2F;IP协议中网络层可以进行网络连接的建立和终止以及IP地址的寻找等功能。<br>网络接口层：在TCP&#x2F;IP协议中，网络接口层位于第四层。由于网络接口层兼并了物理层和数据链路层所以，网络接口层既是传输数据的物理媒介，也可以为网络层提供一条准确无误的线路。<br>WOL协议采用UDP传输</p>
+<hr>
+<h3 id="网络传输速度测试"><a href="#网络传输速度测试" class="headerlink" title="网络传输速度测试"></a>网络传输速度测试</h3><p>访问<a target="_blank" rel="noopener" href="https://github.com/librespeed/speedtest">Speedtest的仓库</a>并下载解压，丢到带php的web服务器里<br>至于怎么搭建服务器，请参考<a href="/p1/posts/2001/">搭建Web服务器</a><br>访问http:&#x2F;&#x2F;你的ip&#x2F;speedtest&#x2F;example-singleServer-full.html，点击Start开始测速，测试完毕就能得到传输数据的实际带宽了</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="01.jpg" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="01.jpg" alt=""></a></div>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/IEEE%20802.11">百度百科.802.11</a><br><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/IEEE%20802.3">百度百科.802.3</a><br><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP%2FIP%E5%8D%8F%E8%AE%AE">百度百科.TCP&#x2F;IP协议</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Network/" rel="tag">Network</a> <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Server/" rel="tag">Server</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3001/"
+                    data-tooltip="你知道量子力学可以有三种写法么？"
+                    aria-label="上一篇: 你知道量子力学可以有三种写法么？"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2004/"
+                    data-tooltip="一些设备的跑分"
+                    aria-label="下一篇: 一些设备的跑分"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3001/"
+                    data-tooltip="你知道量子力学可以有三种写法么？"
+                    aria-label="上一篇: 你知道量子力学可以有三种写法么？"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2004/"
+                    data-tooltip="一些设备的跑分"
+                    aria-label="下一篇: 一些设备的跑分"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

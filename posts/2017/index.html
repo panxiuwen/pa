@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>使用Hexo框架建站 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍如何使用Hexo框架在Github托管静态网站，本教程的代码适用Win&#x2F;Linux&#x2F;Mac\n\n\n\n\nHexo的安装与初始化安装请配置好git和Node并安装hexo配置git部分详见Git使用配置Node部分详见编程语言相关笔记如果较慢，建议使用Fastgithub代理\n1npm install hexo-cli -g\n初始化初始化工程文件，假设我们本地存放blog的位置是d:&#x2F;tools&#x2F;blog&#x2F;目录中不要有中文和空格\n1234cd d:/toolshexo init blogcd blognpm install\n配置文件修改&#x2F;_config.yml\n123456789url：必须要设置，否则某些资源会变成exmple.com，这个问题我也没解决permalink：决定生成blog的链接pretty_urls：全部设置成false，否则访问还得加.htmlDirectory：决定各文件存放位置post_asset_folder：设置为true后，资源文件都会在对应标题的title文件夹里直接调用relative_link：笔者亲测有bug，建议关闭此选项index_generator：决定页面生成文章的数量和顺序deploy：决定部署方式theme：设置主题\n如果根为&#x2F;p3，则需要设置\n12root: &quot;/p3/&quot;url: &quot;http://192.168.192.100/p3/&quot;\n预览12hexo cl\t\t//清除旧文件hexo s -p 80 -i 192.168.1.100\t//运行hexo内建的http服务器\n若需要更改默认ip和端口修改C:\\Program\\Tools\\blog\\node_modules\\hexo-server\n12port: 80,ip: &quot;0.0.0.0&quot;,\n\n安装插件加载公式如果网页中不加入公式的话，可以不考虑这一步，毕竟生成网页时渲染公式也是要耗费电脑资源的安装hexo-math\n1npm install hexo-math --save\n如果要禁用外部css，禁用后mathjax正常，katex无法渲染\n12345math:  katex:    css: false  mathjax:    css: false\n使用公式参考Markdown的高阶用法注意一个网页中的公式数量有限制，笔者测试的结果是大约是320个\n隐藏文章插件添加插件\n1npm install hexo-hide-posts --save\n在站点目录下的_config.yml中如下配置\n1234hide_posts:  filter: hidden  public_generators: []  noindex: true\n在需要隐藏的文章中添加\n12345---title: &#x27;Hidden Post&#x27;date: &#x27;2021/03/05 21:45:14&#x27;hidden: true---\n懒加载添加插件\n1npm install npm install hexo-lazyload-image --save\n增加配置\n12345lazyload:  enable: true  onlypost: true  isSPA: true  preloadRatio: 3\n安装Tranquilpeak主题这是笔者使用的主题，走的MaterialDesign+简约风，如果你喜欢别的，也可以用其他主题，很成熟的如Next，Fluid等老牌主题教程和文档多，对新手很友好。综上如果你不是特别喜欢这个主题，完全可以跳过此步并选择其他主题。\n安装请提前安装好依赖否则将报错\n1apt-get install python3 python3-dev make g++\n切换到/blog/themes下载Tranquilpeak主题\n1git clone https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak.git\n运行安装命令\n1npm install &amp;&amp; npm run prod\n如果提示\n1Node Sass does not yet support your current environment: Linux 64-bit with Unsupported runtime\n尝试使用，多等一会，特别慢\n1npm rebuild node-sass\n资源文件1234侧边栏图标存储目录：/themes/tranquilpeak/node_modules/@fortawesome/fontawesome-free/svgs/brands侧边栏布局修改：/tranquilpeak/_config.yml侧边栏显示内容修改：/tranquilpeak/languages/zh-cn.yml添加网站图标：favicon.svg放在/tranquilpeak/source/assets/images/中，在/tranquilpeak/_config.yml里的favicon键后添加文件名即可\n更新需要替换重要的数据文件\n1234/blog/_config.yml/blog/source//blog/themes/tranquilpeak/_config.yml/blog/themes/tranquilpeak/languages/zh-cn.yml/blog/themes/tranquilpeak/source/assets/images/\n删除标题中的“发表在XXX”\n修改blog&#x2F;themes&#x2F;tranquilpeak&#x2F;layout&#x2F;_partial&#x2F;post&#x2F;meta.ejs\n\n1&lt;% if ((post.categories) &amp;&amp; (post.categories.length &lt; 0)) &#123; %&gt;\n禁用字体删除/tranquilpeak/source/_css/tranquilpeak.scss中字体内容\n1&#x27;utils/fonts&#x27;,\n重新编译主题\n1npm install &amp;&amp; npm run prod\n去除绝对链接删除/tranquilpeak/scripts/filters/thumbnail_image_url.js中root + \n目录相关在喜欢的位置插入\n1&lt;!-- toc --&gt;\n\n建立多个站点由于本人的站点使用了绝对链接，每次部署&#x2F;调试&#x2F;更换镜像都会产生不同的文件，所以每次操作都得清除缓存，磁盘擦写量很大，想了个每次只用更新一次文件的方法假设我的blog目录是&#x2F;blog，此文件夹作为调试文件夹，url&#x3D;http://127.0.0.1/那么我们建立&#x2F;blogg文件夹作为Github节点，其中url设置为https://panxiuwen.github.io/建立&#x2F;blogc作为Cloudflare节点，其中url设置为https://panxiuwen.pages.dev/设置.github、node_modules、scaffolds、source、themes软连接文件夹到新文件夹设置.gitignore、package.json、package-lock.json软连接文件到新文件夹将一键部署hexo.py和_config.yml文件复制到新文件夹，其中一键部署hexo.py文件内容在后面对于Windows\n12345678mklink &quot;E:\\Store\\blogp\\package.json&quot; &quot;E:\\Store\\blog\\package.json&quot;mklink &quot;E:\\Store\\blogp\\.gitignore&quot; &quot;E:\\Store\\blog\\.gitignore&quot;mklink &quot;E:\\Store\\blogp\\package-lock.json&quot; &quot;E:\\Store\\blog\\package-lock.json&quot;mklink /d &quot;E:\\Store\\blogp\\.github&quot; &quot;E:\\Store\\blog\\.github&quot;mklink /d &quot;E:\\Store\\blogp\\node_modules&quot; &quot;E:\\Store\\blog\\node_modules&quot;mklink /d &quot;E:\\Store\\blogp\\scaffolds&quot; &quot;E:\\Store\\blog\\scaffolds&quot;mklink /d &quot;E:\\Store\\blogp\\source3&quot; &quot;E:\\Store\\blog\\source3&quot;mklink /d &quot;E:\\Store\\blogp\\themes&quot; &quot;E:\\Store\\blog\\themes&quot;\n对于Linux\n12345678ln /app/blog/blog1/package.json /app/blog/blogg/package.json -sln /app/blog/blog1/.gitignore /app/blog/blogg/.gitignore -sln /app/blog/blog1/package-lock.json /app/blog/blogg/package-lock.json -sln /app/blog/blog1/.github /app/blog/blogg/.github -sln /app/blog/blog1/node_modules /app/blog/blogg/node_modules -sln /app/blog/blog1/scaffolds /app/blog/blogg/scaffolds -sln /app/blog/blog1/source /app/blog/blogg/source -sln /app/blog/blog1/themes /app/blog/blogg/themes -s\n设置快速生成脚本\n123alias hg1=&quot;cd /app/blog/blog1&amp;&amp;hexo g&quot;alias hg2=&quot;cd /app/blog/blog2&amp;&amp;hexo g&quot;alias hg3=&quot;cd /app/blog/blog3&amp;&amp;hexo g&quot;\n若将生成的静态文件链接至Web服务器\n1ln /app/blog/blog2/public /var/www/html/p2 -s\n\n部署在Github上部署在github上需要注册一个和名字相同的仓库，例如我Github链接是https://github.com/panxiuwen/注册的仓库的名称就应该是panxiuwen.github.io安装hexo-deployer-git\n1npm install hexo-deployer-git --save\n在_config文件中添加deploy信息\n12345deploy:  type: git  repo: https://github.com/panxiuwen/panxiuwen.github.io.git  branch: &quot;master&quot;  message: &quot;update blog&quot;\n也可以注册ssh公钥，然后repo替换成ssh的地址，注册方法见Git使用\n12345deploy:  type: git  repo: &quot;git@github.com:panxiuwen/panxiuwen.github.io.git&quot;  branch: &quot;main&quot;  message: &quot;update blog&quot;\n上传代码到github\n123hexo cl\t//如果不出现资源文件错误，可以不执行，每次生成都很废硬盘hexo g\t//这一步是为了生成静态文件，若不执行，则hexo d不会改动hexo d\t//部署\n修改仓库的Settings-Pages，在Source中选择Main分支，点Save\n搭建Cloudflare镜像站Cloudflare是全球顶级的CDN供应商，为用户免费托管网站，每月免费部署500次，可设置100个domains，不限访问带宽和流量，每个站点可存储20k个文件，最大文件为25M，详见Limits，虽然节点在美国，但打开速度甚至比gitee还快。首先进入Cloudflare官网，Page-&gt;创建项目-&gt;连接到Git-&gt;登陆Github后选择一个仓库-&gt;选择分支-&gt;开始部署注意页面部署后无法修改url，Page的url就是项目名称+.pages.dev，所以部署前要提前写好_config里的url。只需要部署一次，绑定的github仓库更新它就更新了。\n搭建Netlify镜像站Netlify每月流量100G，每次只能同时部署一个项目，每月5小时的部署时长，搭建方法与前面两个类似，速度和github半斤八两，比github稳定那么一丢丢。进入Netlify官网，也限制月流量100G，直接照着前两个搞就行了。\n搭建Vercel镜像站现貌似已经无法访问，Vercel每月流量100G，速度比Cloudflare慢一点但还是比Github快不少，在Billing-Plant查看用量。进入Vercel官网，注册后选择Continuewith GitHub，成功后新建一个项目，选择存放主页代码的仓库，点击 Import导入该仓库，再点Deploy开始部署。点击 Go to Dashboard，进入项目主界面。点击上方的 Settings，选择Domains修改域名。对于XXX.vercel.app 这个域名，你只能修改XXX这一部分，注意修改部署前_config.yml里的url。\n\n搭建Gitlab镜像站笔者实在是玩不转，读者可以自己弄\n\n不建议搭建的镜像站GiteeGitee是国内Git服务提供商，提供免费的GitePage服务，实名认证通常审核1天每次更新完仓库需手动部署，但是屏蔽规则和屏蔽词太多，可能是公司太小，算法不太健全，而且免费服务还能怎样，考虑这么多虽然选择原谅它，但我还是懒得弄了。腾讯云腾讯云是国内顶级服务器提供商，可以使用Serverless进行部署使用serverless工具部署，给的免费域名很难记，用起来的话肯定得绑自己的域名的，计费规则复杂，教程可参考部署 Hexo 博客阿里云腾讯云是国内顶级服务器提供商，可以使用OSS进行部署使用hexo-deployer-ali-oss工具进行部署，给的免费域名很难记，用起来的话肯定得绑自己的域名的，计费方式复杂，教程可参考阿里云OSS部署Hexo教程七牛云七牛云是国内的服务器提供商，可以使用kodo进行部署使用hexo-qiniu-sync工具进行部署，不给免费域名，教程可参考hexo托管七牛云\n\n一些小技巧链接到其他文章拿本站为例，本站挂在github上的链接为\n1https://panxiuwen.github.io\n那么从\n1https://panxiuwen.github.io/post/1007\n跳转到\n1https://panxiuwen.github.io/post/2017\n只需在1007的Markdown文件里写入写下面的链接代码即可\n1[名字随便起](/post/2017/)\n嵌入Bilibili视频分享-&gt;嵌入代码\n1234&#123;% raw %&#125;&lt;div style=&quot;position: relative; width: 100%; height: 0; padding-bottom: 75%;&quot;&gt;&lt;iframe src=&quot;//player.bilibili.com/player.html?aid=93802760&amp;bvid=BV1tE411x76k&amp;cid=160149744&amp;page=1&quot; scrolling=&quot;no&quot; border=&quot;0&quot; frameborder=&quot;no&quot; framespacing=&quot;0&quot; allowfullscreen=&quot;true&quot; style=&quot;position: absolute; width: 100%; height: 100%; Left: 0; top: 0;&quot; &gt;&lt;/iframe&gt;&lt;/div&gt;&#123;% endraw %&#125;\n带滚动条的表格使用表格生成器可轻松生成html表格然后将表格插入到下面的CSS代码中\n12345&lt;div style=&quot;overflow-x:auto;white-space:nowrap;&quot;&gt;&lt;table style=&quot;text-align:center;&quot;&gt;···&lt;/table&gt;&lt;/div&gt;\n\n常见问题Could not read from remote repository.Please make sure you have the correct access rightsssh未配置好，见Git使用\nTemplate render error: (unknown path) Error: unexpected end of comment检查文章中是否有&#123; #字符串，如果有就删掉\n文件夹大小导致的错误上传到github上的文件夹默认是不区分大小写的，且github有历史记录的功能，所以一旦改了目录的大小写，将会再也无法更改且网站404，查阅资料得知可通过修改github配置文件解决修改/blog/.deploy_git/.git/config中的\n1ignorecase = false\n\n参考文档将Hexo仓库Hexo主题仓库Tranquilpeak的仓库Hexo-math的仓库\n","dateCreated":"2022-06-01T00:00:00+08:00","dateModified":"2023-07-12T17:35:55+08:00","datePublished":"2022-06-01T00:00:00+08:00","description":"本文介绍如何使用Hexo框架在Github托管静态网站，本教程的代码适用Win&#x2F;Linux&#x2F;Mac","headline":"使用Hexo框架建站","image":["cover.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2017/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2017/","keywords":"Develop","thumbnailUrl":"cover.jpg"}</script>
+    <meta name="description" content="本文介绍如何使用Hexo框架在Github托管静态网站，本教程的代码适用Win&#x2F;Linux&#x2F;Mac">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="使用Hexo框架建站">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2017/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍如何使用Hexo框架在Github托管静态网站，本教程的代码适用Win&#x2F;Linux&#x2F;Mac">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-12T09:35:55.808Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Develop">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2017/cover.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2017/cover.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            使用Hexo框架建站
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2022-06-01T00:00:00+08:00">
+	
+		    2022年 6月 01日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Develop/">Develop</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍如何使用Hexo框架在Github托管静态网站，本教程的代码适用Win&#x2F;Linux&#x2F;Mac</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hexo%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">Hexo的安装与初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E8%A7%88"><span class="toc-text">预览</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-text">安装插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E5%85%AC%E5%BC%8F"><span class="toc-text">加载公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0%E6%8F%92%E4%BB%B6"><span class="toc-text">隐藏文章插件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%87%92%E5%8A%A0%E8%BD%BD"><span class="toc-text">懒加载</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Tranquilpeak%E4%B8%BB%E9%A2%98"><span class="toc-text">安装Tranquilpeak主题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="toc-text">资源文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%A0%87%E9%A2%98%E4%B8%AD%E7%9A%84%E2%80%9C%E5%8F%91%E8%A1%A8%E5%9C%A8XXX%E2%80%9D"><span class="toc-text">删除标题中的“发表在XXX”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A6%81%E7%94%A8%E5%AD%97%E4%BD%93"><span class="toc-text">禁用字体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%BB%E9%99%A4%E7%BB%9D%E5%AF%B9%E9%93%BE%E6%8E%A5"><span class="toc-text">去除绝对链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%9B%B8%E5%85%B3"><span class="toc-text">目录相关</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E5%A4%9A%E4%B8%AA%E7%AB%99%E7%82%B9"><span class="toc-text">建立多个站点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8Github%E4%B8%8A%E9%83%A8%E7%BD%B2"><span class="toc-text">在Github上部署</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%AD%E5%BB%BACloudflare%E9%95%9C%E5%83%8F%E7%AB%99"><span class="toc-text">搭建Cloudflare镜像站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%AD%E5%BB%BANetlify%E9%95%9C%E5%83%8F%E7%AB%99"><span class="toc-text">搭建Netlify镜像站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%AD%E5%BB%BAVercel%E9%95%9C%E5%83%8F%E7%AB%99"><span class="toc-text">搭建Vercel镜像站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%AD%E5%BB%BAGitlab%E9%95%9C%E5%83%8F%E7%AB%99"><span class="toc-text">搭建Gitlab镜像站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E5%BB%BA%E8%AE%AE%E6%90%AD%E5%BB%BA%E7%9A%84%E9%95%9C%E5%83%8F%E7%AB%99"><span class="toc-text">不建议搭建的镜像站</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="toc-text">一些小技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E5%88%B0%E5%85%B6%E4%BB%96%E6%96%87%E7%AB%A0"><span class="toc-text">链接到其他文章</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5Bilibili%E8%A7%86%E9%A2%91"><span class="toc-text">嵌入Bilibili视频</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%A6%E6%BB%9A%E5%8A%A8%E6%9D%A1%E7%9A%84%E8%A1%A8%E6%A0%BC"><span class="toc-text">带滚动条的表格</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-text">常见问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Could-not-read-from-remote-repository-Please-make-sure-you-have-the-correct-access-rights"><span class="toc-text">Could not read from remote repository.Please make sure you have the correct access rights</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Template-render-error-unknown-path-Error-unexpected-end-of-comment"><span class="toc-text">Template render error: (unknown path) Error: unexpected end of comment</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%A4%B9%E5%A4%A7%E5%B0%8F%E5%AF%BC%E8%87%B4%E7%9A%84%E9%94%99%E8%AF%AF"><span class="toc-text">文件夹大小导致的错误</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-text">参考文档</span></a></li></ol>
+<hr>
+<h3 id="Hexo的安装与初始化"><a href="#Hexo的安装与初始化" class="headerlink" title="Hexo的安装与初始化"></a>Hexo的安装与初始化</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>请配置好git和Node并安装hexo<br>配置git部分详见<a href="/p1/posts/2013/">Git使用</a><br>配置Node部分详见<a href="/p1/posts/4022/">编程语言相关笔记</a><br>如果较慢，建议使用Fastgithub代理</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>初始化工程文件，假设我们本地存放blog的位置是d:&#x2F;tools&#x2F;blog&#x2F;目录中不要有中文和空格</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd d:/tools</span><br><span class="line">hexo init blog</span><br><span class="line">cd blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<h4 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h4><p>修改&#x2F;_config.yml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">url：必须要设置，否则某些资源会变成exmple.com，这个问题我也没解决</span><br><span class="line">permalink：决定生成blog的链接</span><br><span class="line">pretty_urls：全部设置成false，否则访问还得加.html</span><br><span class="line">Directory：决定各文件存放位置</span><br><span class="line">post_asset_folder：设置为true后，资源文件都会在对应标题的title文件夹里直接调用</span><br><span class="line">relative_link：笔者亲测有bug，建议关闭此选项</span><br><span class="line">index_generator：决定页面生成文章的数量和顺序</span><br><span class="line">deploy：决定部署方式</span><br><span class="line">theme：设置主题</span><br></pre></td></tr></table></figure>
+<p>如果根为&#x2F;p3，则需要设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root: &quot;/p3/&quot;</span><br><span class="line">url: &quot;http://192.168.192.100/p3/&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo cl		//清除旧文件</span><br><span class="line">hexo s -p 80 -i 192.168.1.100	//运行hexo内建的http服务器</span><br></pre></td></tr></table></figure>
+<p>若需要更改默认ip和端口<br>修改<code>C:\Program\Tools\blog\node_modules\hexo-server</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port: 80,</span><br><span class="line">ip: &quot;0.0.0.0&quot;,</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><h4 id="加载公式"><a href="#加载公式" class="headerlink" title="加载公式"></a>加载公式</h4><p><strong>如果网页中不加入公式的话，可以不考虑这一步，毕竟生成网页时渲染公式也是要耗费电脑资源的</strong><br>安装hexo-math</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-math --save</span><br></pre></td></tr></table></figure>
+<p>如果要禁用外部css，禁用后mathjax正常，katex无法渲染</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">math:</span><br><span class="line">  katex:</span><br><span class="line">    css: false</span><br><span class="line">  mathjax:</span><br><span class="line">    css: false</span><br></pre></td></tr></table></figure>
+<p>使用公式参考<a href="/p1/posts/2024/">Markdown的高阶用法</a><br>注意一个网页中的公式数量有限制，笔者测试的结果是大约是320个</p>
+<h4 id="隐藏文章插件"><a href="#隐藏文章插件" class="headerlink" title="隐藏文章插件"></a>隐藏文章插件</h4><p>添加插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-hide-posts --save</span><br></pre></td></tr></table></figure>
+<p>在站点目录下的_config.yml中如下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hide_posts:</span><br><span class="line">  filter: hidden</span><br><span class="line">  public_generators: []</span><br><span class="line">  noindex: true</span><br></pre></td></tr></table></figure>
+<p>在需要隐藏的文章中添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: &#x27;Hidden Post&#x27;</span><br><span class="line">date: &#x27;2021/03/05 21:45:14&#x27;</span><br><span class="line">hidden: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<h4 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h4><p>添加插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install npm install hexo-lazyload-image --save</span><br></pre></td></tr></table></figure>
+<p>增加配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lazyload:</span><br><span class="line">  enable: true</span><br><span class="line">  onlypost: true</span><br><span class="line">  isSPA: true</span><br><span class="line">  preloadRatio: 3</span><br></pre></td></tr></table></figure>
+<h3 id="安装Tranquilpeak主题"><a href="#安装Tranquilpeak主题" class="headerlink" title="安装Tranquilpeak主题"></a>安装Tranquilpeak主题</h3><p>这是笔者使用的主题，走的MaterialDesign+简约风，如果你喜欢别的，也可以用其他主题，很成熟的如Next，Fluid等老牌主题教程和文档多，对新手很友好。<strong>综上如果你不是特别喜欢这个主题，完全可以跳过此步并选择其他主题。</strong></p>
+<h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><p>请提前安装好依赖否则将报错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python3 python3-dev make g++</span><br></pre></td></tr></table></figure>
+<p>切换到<code>/blog/themes</code>下载Tranquilpeak主题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak.git</span><br></pre></td></tr></table></figure>
+<p>运行安装命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install &amp;&amp; npm run prod</span><br></pre></td></tr></table></figure>
+<p>如果提示</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Node Sass does not yet support your current environment: Linux 64-bit with Unsupported runtime</span><br></pre></td></tr></table></figure>
+<p>尝试使用，多等一会，特别慢</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm rebuild node-sass</span><br></pre></td></tr></table></figure>
+<h4 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a>资源文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">侧边栏图标存储目录：/themes/tranquilpeak/node_modules/@fortawesome/fontawesome-free/svgs/brands</span><br><span class="line">侧边栏布局修改：/tranquilpeak/_config.yml</span><br><span class="line">侧边栏显示内容修改：/tranquilpeak/languages/zh-cn.yml</span><br><span class="line">添加网站图标：favicon.svg放在/tranquilpeak/source/assets/images/中，在/tranquilpeak/_config.yml里的favicon键后添加文件名即可</span><br></pre></td></tr></table></figure>
+<p>更新需要替换重要的数据文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/blog/_config.yml</span><br><span class="line">/blog/source//blog/themes/tranquilpeak/_config.yml</span><br><span class="line">/blog/themes/tranquilpeak/languages/zh-cn.yml</span><br><span class="line">/blog/themes/tranquilpeak/source/assets/images/</span><br></pre></td></tr></table></figure>
+<h4 id="删除标题中的“发表在XXX”"><a href="#删除标题中的“发表在XXX”" class="headerlink" title="删除标题中的“发表在XXX”"></a>删除标题中的“发表在XXX”</h4><blockquote>
+<p>修改blog&#x2F;themes&#x2F;tranquilpeak&#x2F;layout&#x2F;_partial&#x2F;post&#x2F;meta.ejs</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;% if ((post.categories) &amp;&amp; (post.categories.length &lt; 0)) &#123; %&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="禁用字体"><a href="#禁用字体" class="headerlink" title="禁用字体"></a>禁用字体</h4><p>删除<code>/tranquilpeak/source/_css/tranquilpeak.scss</code>中字体内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;utils/fonts&#x27;,</span><br></pre></td></tr></table></figure>
+<p>重新编译主题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install &amp;&amp; npm run prod</span><br></pre></td></tr></table></figure>
+<h4 id="去除绝对链接"><a href="#去除绝对链接" class="headerlink" title="去除绝对链接"></a>去除绝对链接</h4><p>删除<code>/tranquilpeak/scripts/filters/thumbnail_image_url.js</code>中<code>root + </code></p>
+<h4 id="目录相关"><a href="#目录相关" class="headerlink" title="目录相关"></a>目录相关</h4><p>在喜欢的位置插入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- toc --&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="建立多个站点"><a href="#建立多个站点" class="headerlink" title="建立多个站点"></a>建立多个站点</h3><p>由于本人的站点使用了绝对链接，每次部署&#x2F;调试&#x2F;更换镜像都会产生不同的文件，所以每次操作都得清除缓存，磁盘擦写量很大，想了个每次只用更新一次文件的方法<br>假设我的blog目录是&#x2F;blog，此文件夹作为调试文件夹，url&#x3D;<code>http://127.0.0.1/</code><br>那么我们建立&#x2F;blogg文件夹作为Github节点，其中url设置为<code>https://panxiuwen.github.io/</code><br>建立&#x2F;blogc作为Cloudflare节点，其中url设置为<code>https://panxiuwen.pages.dev/</code><br>设置.github、node_modules、scaffolds、source、themes软连接文件夹到新文件夹<br>设置.gitignore、package.json、package-lock.json软连接文件到新文件夹<br>将一键部署hexo.py和_config.yml文件复制到新文件夹，其中一键部署hexo.py文件内容在后面<br>对于Windows</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mklink &quot;E:\Store\blogp\package.json&quot; &quot;E:\Store\blog\package.json&quot;</span><br><span class="line">mklink &quot;E:\Store\blogp\.gitignore&quot; &quot;E:\Store\blog\.gitignore&quot;</span><br><span class="line">mklink &quot;E:\Store\blogp\package-lock.json&quot; &quot;E:\Store\blog\package-lock.json&quot;</span><br><span class="line">mklink /d &quot;E:\Store\blogp\.github&quot; &quot;E:\Store\blog\.github&quot;</span><br><span class="line">mklink /d &quot;E:\Store\blogp\node_modules&quot; &quot;E:\Store\blog\node_modules&quot;</span><br><span class="line">mklink /d &quot;E:\Store\blogp\scaffolds&quot; &quot;E:\Store\blog\scaffolds&quot;</span><br><span class="line">mklink /d &quot;E:\Store\blogp\source3&quot; &quot;E:\Store\blog\source3&quot;</span><br><span class="line">mklink /d &quot;E:\Store\blogp\themes&quot; &quot;E:\Store\blog\themes&quot;</span><br></pre></td></tr></table></figure>
+<p>对于Linux</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ln /app/blog/blog1/package.json /app/blog/blogg/package.json -s</span><br><span class="line">ln /app/blog/blog1/.gitignore /app/blog/blogg/.gitignore -s</span><br><span class="line">ln /app/blog/blog1/package-lock.json /app/blog/blogg/package-lock.json -s</span><br><span class="line">ln /app/blog/blog1/.github /app/blog/blogg/.github -s</span><br><span class="line">ln /app/blog/blog1/node_modules /app/blog/blogg/node_modules -s</span><br><span class="line">ln /app/blog/blog1/scaffolds /app/blog/blogg/scaffolds -s</span><br><span class="line">ln /app/blog/blog1/source /app/blog/blogg/source -s</span><br><span class="line">ln /app/blog/blog1/themes /app/blog/blogg/themes -s</span><br></pre></td></tr></table></figure>
+<p>设置快速生成脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias hg1=&quot;cd /app/blog/blog1&amp;&amp;hexo g&quot;</span><br><span class="line">alias hg2=&quot;cd /app/blog/blog2&amp;&amp;hexo g&quot;</span><br><span class="line">alias hg3=&quot;cd /app/blog/blog3&amp;&amp;hexo g&quot;</span><br></pre></td></tr></table></figure>
+<p>若将生成的静态文件链接至Web服务器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln /app/blog/blog2/public /var/www/html/p2 -s</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><h4 id="在Github上部署"><a href="#在Github上部署" class="headerlink" title="在Github上部署"></a>在Github上部署</h4><p>在github上需要注册一个和名字相同的仓库，例如我Github链接是<a target="_blank" rel="noopener" href="https://github.com/panxiuwen/">https://github.com/panxiuwen/</a><br>注册的仓库的名称就应该是<code>panxiuwen.github.io</code><br>安装hexo-deployer-git</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>在_config文件中添加deploy信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: https://github.com/panxiuwen/panxiuwen.github.io.git</span><br><span class="line">  branch: &quot;master&quot;</span><br><span class="line">  message: &quot;update blog&quot;</span><br></pre></td></tr></table></figure>
+<p>也可以注册ssh公钥，然后repo替换成ssh的地址，注册方法见<a href="/p1/posts/2013/">Git使用</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: &quot;git@github.com:panxiuwen/panxiuwen.github.io.git&quot;</span><br><span class="line">  branch: &quot;main&quot;</span><br><span class="line">  message: &quot;update blog&quot;</span><br></pre></td></tr></table></figure>
+<p>上传代码到github</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo cl	//如果不出现资源文件错误，可以不执行，每次生成都很废硬盘</span><br><span class="line">hexo g	//这一步是为了生成静态文件，若不执行，则hexo d不会改动</span><br><span class="line">hexo d	//部署</span><br></pre></td></tr></table></figure>
+<p>修改仓库的Settings-Pages，在Source中选择Main分支，点Save</p>
+<h4 id="搭建Cloudflare镜像站"><a href="#搭建Cloudflare镜像站" class="headerlink" title="搭建Cloudflare镜像站"></a>搭建Cloudflare镜像站</h4><p>Cloudflare是全球顶级的CDN供应商，为用户免费托管网站，每月免费部署500次，可设置100个domains，不限访问带宽和流量，每个站点可存储20k个文件，最大文件为25M，详见<a target="_blank" rel="noopener" href="https://developers.cloudflare.com/pages/platform/limits/">Limits</a>，虽然节点在美国，但打开速度甚至比gitee还快。<br>首先进入<a target="_blank" rel="noopener" href="https://dash.cloudflare.com/">Cloudflare官网</a>，Page-&gt;创建项目-&gt;连接到Git-&gt;登陆Github后选择一个仓库-&gt;选择分支-&gt;开始部署<br><strong>注意页面部署后无法修改url，Page的url就是<code>项目名称+.pages.dev</code>，所以部署前要提前写好_config里的url</strong>。只需要部署一次，绑定的github仓库更新它就更新了。</p>
+<h4 id="搭建Netlify镜像站"><a href="#搭建Netlify镜像站" class="headerlink" title="搭建Netlify镜像站"></a>搭建Netlify镜像站</h4><p>Netlify每月流量100G，每次只能同时部署一个项目，每月5小时的部署时长，搭建方法与前面两个类似，速度和github半斤八两，比github稳定那么一丢丢。<br>进入<a target="_blank" rel="noopener" href="https://www.netlify.com/">Netlify官网</a>，也限制月流量100G，直接照着前两个搞就行了。</p>
+<h4 id="搭建Vercel镜像站"><a href="#搭建Vercel镜像站" class="headerlink" title="搭建Vercel镜像站"></a>搭建Vercel镜像站</h4><p>现貌似已经无法访问，Vercel每月流量100G，速度比Cloudflare慢一点但还是比Github快不少，在<a target="_blank" rel="noopener" href="https://vercel.com/account/billing">Billing-Plant</a>查看用量。<br>进入<a target="_blank" rel="noopener" href="https://vercel.com/">Vercel官网</a>，注册后选择Continuewith GitHub，成功后新建一个项目，选择存放主页代码的仓库，点击 Import导入该仓库，再点Deploy开始部署。<br>点击 Go to Dashboard，进入项目主界面。点击上方的 Settings，选择Domains修改域名。对于XXX.vercel.app 这个域名，你只能修改XXX这一部分，注意修改部署前_config.yml里的url。</p>
+<hr>
+<h4 id="搭建Gitlab镜像站"><a href="#搭建Gitlab镜像站" class="headerlink" title="搭建Gitlab镜像站"></a>搭建Gitlab镜像站</h4><p>笔者实在是玩不转，读者可以自己弄</p>
+<hr>
+<h4 id="不建议搭建的镜像站"><a href="#不建议搭建的镜像站" class="headerlink" title="不建议搭建的镜像站"></a>不建议搭建的镜像站</h4><p><strong>Gitee</strong><br>Gitee是国内Git服务提供商，提供免费的GitePage服务，实名认证通常审核1天每次更新完仓库需手动部署，但是屏蔽规则和屏蔽词太多，可能是公司太小，算法不太健全，而且免费服务还能怎样，考虑这么多虽然选择原谅它，但我还是懒得弄了。<br><strong>腾讯云</strong><br>腾讯云是国内顶级服务器提供商，可以使用Serverless进行部署<br>使用serverless工具部署，给的免费域名很难记，用起来的话肯定得绑自己的域名的，计费规则复杂，教程可参考<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1154/40217">部署 Hexo 博客</a><br><strong>阿里云</strong><br>腾讯云是国内顶级服务器提供商，可以使用OSS进行部署<br>使用hexo-deployer-ali-oss工具进行部署，给的免费域名很难记，用起来的话肯定得绑自己的域名的，计费方式复杂，教程可参考<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b16356059d0f">阿里云OSS部署Hexo教程</a><br><strong>七牛云</strong><br>七牛云是国内的服务器提供商，可以使用kodo进行部署<br>使用hexo-qiniu-sync工具进行部署，不给免费域名，教程可参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43842636/article/details/90049193">hexo托管七牛云</a></p>
+<hr>
+<h3 id="一些小技巧"><a href="#一些小技巧" class="headerlink" title="一些小技巧"></a>一些小技巧</h3><h4 id="链接到其他文章"><a href="#链接到其他文章" class="headerlink" title="链接到其他文章"></a>链接到其他文章</h4><p>拿本站为例，本站挂在github上的链接为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://panxiuwen.github.io</span><br></pre></td></tr></table></figure>
+<p>那么从</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://panxiuwen.github.io/post/1007</span><br></pre></td></tr></table></figure>
+<p>跳转到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://panxiuwen.github.io/post/2017</span><br></pre></td></tr></table></figure>
+<p>只需在1007的Markdown文件里写入写下面的链接代码即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[名字随便起](/post/2017/)</span><br></pre></td></tr></table></figure>
+<h4 id="嵌入Bilibili视频"><a href="#嵌入Bilibili视频" class="headerlink" title="嵌入Bilibili视频"></a>嵌入Bilibili视频</h4><p>分享-&gt;嵌入代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% raw %&#125;</span><br><span class="line">&lt;div style=&quot;position: relative; width: 100%; height: 0; padding-bottom: 75%;&quot;&gt;</span><br><span class="line">&lt;iframe src=&quot;//player.bilibili.com/player.html?aid=93802760&amp;bvid=BV1tE411x76k&amp;cid=160149744&amp;page=1&quot; scrolling=&quot;no&quot; border=&quot;0&quot; frameborder=&quot;no&quot; framespacing=&quot;0&quot; allowfullscreen=&quot;true&quot; style=&quot;position: absolute; width: 100%; height: 100%; Left: 0; top: 0;&quot; &gt;&lt;/iframe&gt;&lt;/div&gt;</span><br><span class="line">&#123;% endraw %&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="带滚动条的表格"><a href="#带滚动条的表格" class="headerlink" title="带滚动条的表格"></a>带滚动条的表格</h4><p>使用<a target="_blank" rel="noopener" href="https://www.tablesgenerator.com/html_tables">表格生成器</a>可轻松生成html表格<br>然后将表格插入到下面的CSS代码中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;div style=&quot;overflow-x:auto;white-space:nowrap;&quot;&gt;</span><br><span class="line">&lt;table style=&quot;text-align:center;&quot;&gt;</span><br><span class="line">···</span><br><span class="line">&lt;/table&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><h4 id="Could-not-read-from-remote-repository-Please-make-sure-you-have-the-correct-access-rights"><a href="#Could-not-read-from-remote-repository-Please-make-sure-you-have-the-correct-access-rights" class="headerlink" title="Could not read from remote repository.Please make sure you have the correct access rights"></a>Could not read from remote repository.Please make sure you have the correct access rights</h4><p>ssh未配置好，见<a href="/p1/posts/2013/">Git使用</a></p>
+<h4 id="Template-render-error-unknown-path-Error-unexpected-end-of-comment"><a href="#Template-render-error-unknown-path-Error-unexpected-end-of-comment" class="headerlink" title="Template render error: (unknown path) Error: unexpected end of comment"></a>Template render error: (unknown path) Error: unexpected end of comment</h4><p>检查文章中是否有<code>&#123; #</code>字符串，如果有就删掉</p>
+<h4 id="文件夹大小导致的错误"><a href="#文件夹大小导致的错误" class="headerlink" title="文件夹大小导致的错误"></a>文件夹大小导致的错误</h4><p>上传到github上的文件夹默认是不区分大小写的，且github有历史记录的功能，所以一旦改了目录的大小写，将会再也无法更改且网站404，查阅资料得知可通过修改github配置文件解决<br>修改<code>/blog/.deploy_git/.git/config</code>中的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ignorecase = false</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">将Hexo仓库</a><br><a target="_blank" rel="noopener" href="https://hexo.io/themes/">Hexo主题仓库</a><br><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak">Tranquilpeak的仓库</a><br><a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-math">Hexo-math的仓库</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Develop/" rel="tag">Develop</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3000/"
+                    data-tooltip="不确定原理为啥不确定啊？又被傅里叶懂完了"
+                    aria-label="上一篇: 不确定原理为啥不确定啊？又被傅里叶懂完了"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2018/"
+                    data-tooltip="使用Wordpress建站"
+                    aria-label="下一篇: 使用Wordpress建站"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3000/"
+                    data-tooltip="不确定原理为啥不确定啊？又被傅里叶懂完了"
+                    aria-label="上一篇: 不确定原理为啥不确定啊？又被傅里叶懂完了"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2018/"
+                    data-tooltip="使用Wordpress建站"
+                    aria-label="下一篇: 使用Wordpress建站"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

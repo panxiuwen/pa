@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>Waifu2x服务器搭建 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍了搭建Waifu2x Web前端的搭建\n\n\n\n\n由于除了非常难用的nagadomi-waifu2x，其他Waifu2x框架都没得web前端，然后我花了一个下午撸了一个，给同样有需求的人分享\n\n下载仓库\nWaifu2x-Vulkan的WebUI使用此版本使用Vulkan api，可使用GPU并有良好的兼容性安装waifu2x-vulkan和相关依赖\n12pip install waifu2x-vulkan -vpip install paste bottle\n对于arm版Linux，请下载源代码解压，链接系统的/usr/lib/aarch64-linux-gnu/libvulkan.so到waifu2x-vulkan-1.1.6\\VulkanSDK\\linux\\libvulkan.so后用pip编译成whl再安装将assets.rar解压后，运行WebUI-Waifu2x-Vulkan.py，访问http://127.0.0.1:2333即可看到效果\n\nWaifu2x-PyTorch的WebUI使用此版本使用PyTorch api，但我只使用CPU成功过，GPU版在我的T600上爆显存了下载Waifu2x PyTorch仓库\n1git clone https://github.com/yu45020/Waifu2x\n安装依赖\n1pip install paste bottle torch pillow numpy torchvision\n将assets.rar解压后，运行WebUI-Waifu2x-PyTorch.py，访问 http://127.0.0.1:2333 即可看到效果\n\n代理为二级目录需要修改html的/api为/wf/api否则提交图片后直接404参考搭建Web服务器\n12345&lt;VirtualHost *:80&gt;\tProxyRequests Off\tProxyPass /wf/ http://127.0.0.1:2333/\tProxyPassReverse /wf/ http://127.0.0.1:2333/&lt;/VirtualHost&gt;\n重启Apache后测试\n\n配置服务创建文件\n1nano /etc/init.d/waifu2x-webui\n写入下面内容\n1234567891011121314151617181920212223242526272829#!/bin/sh### BEGIN INIT INFO# Provides: waifu2x-webui# Required-Start: $remote_fs $network# Required-Stop: $remote_fs $network# Default-Start: 2 3 4 5# Default-Stop: 0 1 6# Short-Description: waifu2x-webui### END INIT INFOcase &quot;$1&quot; instart) echo -n &quot;已开启waifu2x-webui&quot; /usr/bin/python3 /app/waifu2x-webui/WebUI-Waifu2x-Vulkan-Linux.py&amp;;;stop) echo -n &quot;已关闭waifu2x-webui&quot; killall python3;;restart) killall python3 /usr/bin/python3 /app/waifu2x-webui/WebUI-Waifu2x-Vulkan-Linux.py&amp;;;esacexit\n控制服务\n12345chmod 755 /etc/init.d/waifu2x-webui\t//更改脚本权限update-rc.d waifu2x-webui defaults\t\t//加入服务/lib/systemd/systemd-sysv-install enable waifu2x-webuiservice waifu2x-webui restart\t\t\t//重启服务systemctl enable waifu2x-webui\t\t\t//服务开机自启\n\n参考nagadomi-waifu2x: 直接魔改的原网页Waifu2x-vulkan：本项目使用了此库Waifu2x PyTorch: 本项目使用了此库\n","dateCreated":"2022-10-17T00:00:00+08:00","dateModified":"2023-05-30T17:56:38+08:00","datePublished":"2022-10-17T00:00:00+08:00","description":"本文介绍了搭建Waifu2x Web前端的搭建","headline":"Waifu2x服务器搭建","image":["../10000/Waifu2x.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2011/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2011/","keywords":"Media, Server, Intelligence","thumbnailUrl":"../10000/Waifu2x.jpg"}</script>
+    <meta name="description" content="本文介绍了搭建Waifu2x Web前端的搭建">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Waifu2x服务器搭建">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2011/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍了搭建Waifu2x Web前端的搭建">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-30T09:56:38.239Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Media">
+<meta property="article:tag" content="Server">
+<meta property="article:tag" content="Intelligence">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2011/../10000/Waifu2x.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2011/../10000/Waifu2x.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Waifu2x服务器搭建
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2022-10-17T00:00:00+08:00">
+	
+		    2022年 10月 17日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Intelligence/">Intelligence</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍了搭建Waifu2x Web前端的搭建</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Waifu2x-Vulkan%E7%9A%84WebUI%E4%BD%BF%E7%94%A8"><span class="toc-text">Waifu2x-Vulkan的WebUI使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Waifu2x-PyTorch%E7%9A%84WebUI%E4%BD%BF%E7%94%A8"><span class="toc-text">Waifu2x-PyTorch的WebUI使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E4%B8%BA%E4%BA%8C%E7%BA%A7%E7%9B%AE%E5%BD%95"><span class="toc-text">代理为二级目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1"><span class="toc-text">配置服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+<hr>
+<p>由于除了非常难用的<a target="_blank" rel="noopener" href="https://github.com/nagadomi/waifu2x">nagadomi-waifu2x</a>，其他Waifu2x框架都没得web前端，然后我花了一个下午撸了一个，给同样有需求的人分享</p>
+<hr>
+<p>下载<a target="_blank" rel="noopener" href="https://github.com/panxiuwen/waifu2x-webui">仓库</a></p>
+<h3 id="Waifu2x-Vulkan的WebUI使用"><a href="#Waifu2x-Vulkan的WebUI使用" class="headerlink" title="Waifu2x-Vulkan的WebUI使用"></a>Waifu2x-Vulkan的WebUI使用</h3><p>此版本使用Vulkan api，可使用GPU并有良好的兼容性<br>安装waifu2x-vulkan和相关依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install waifu2x-vulkan -v</span><br><span class="line">pip install paste bottle</span><br></pre></td></tr></table></figure>
+<p>对于arm版Linux，请下载源代码解压，链接系统的<code>/usr/lib/aarch64-linux-gnu/libvulkan.so</code>到<code>waifu2x-vulkan-1.1.6\VulkanSDK\linux\libvulkan.so</code>后用pip编译成whl再安装<br>将assets.rar解压后，运行WebUI-Waifu2x-Vulkan.py，访问<a href="http://127.0.0.1:2333即可看到效果">http://127.0.0.1:2333即可看到效果</a></p>
+<hr>
+<h3 id="Waifu2x-PyTorch的WebUI使用"><a href="#Waifu2x-PyTorch的WebUI使用" class="headerlink" title="Waifu2x-PyTorch的WebUI使用"></a>Waifu2x-PyTorch的WebUI使用</h3><p>此版本使用PyTorch api，但我只使用CPU成功过，GPU版在我的T600上爆显存了<br>下载<a target="_blank" rel="noopener" href="https://github.com/yu45020/Waifu2x">Waifu2x PyTorch仓库</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/yu45020/Waifu2x</span><br></pre></td></tr></table></figure>
+<p>安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install paste bottle torch pillow numpy torchvision</span><br></pre></td></tr></table></figure>
+<p>将assets.rar解压后，运行WebUI-Waifu2x-PyTorch.py，访问 <a target="_blank" rel="noopener" href="http://127.0.0.1:2333/">http://127.0.0.1:2333</a> 即可看到效果</p>
+<hr>
+<h3 id="代理为二级目录"><a href="#代理为二级目录" class="headerlink" title="代理为二级目录"></a>代理为二级目录</h3><p>需要修改html的<code>/api</code>为<code>/wf/api</code>否则提交图片后直接404<br>参考<a href="/p1/posts/2001/">搭建Web服务器</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">	ProxyRequests Off</span><br><span class="line">	ProxyPass /wf/ http://127.0.0.1:2333/</span><br><span class="line">	ProxyPassReverse /wf/ http://127.0.0.1:2333/</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>重启Apache后测试</p>
+<hr>
+<h3 id="配置服务"><a href="#配置服务" class="headerlink" title="配置服务"></a>配置服务</h3><p>创建文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/init.d/waifu2x-webui</span><br></pre></td></tr></table></figure>
+<p>写入下面内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line"></span><br><span class="line">### BEGIN INIT INFO</span><br><span class="line"># Provides: waifu2x-webui</span><br><span class="line"># Required-Start: $remote_fs $network</span><br><span class="line"># Required-Stop: $remote_fs $network</span><br><span class="line"># Default-Start: 2 3 4 5</span><br><span class="line"># Default-Stop: 0 1 6</span><br><span class="line"># Short-Description: waifu2x-webui</span><br><span class="line">### END INIT INFO</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">start)</span><br><span class="line"></span><br><span class="line"> echo -n &quot;已开启waifu2x-webui&quot;</span><br><span class="line"> /usr/bin/python3 /app/waifu2x-webui/WebUI-Waifu2x-Vulkan-Linux.py&amp;</span><br><span class="line">;;</span><br><span class="line">stop)</span><br><span class="line"></span><br><span class="line"> echo -n &quot;已关闭waifu2x-webui&quot;</span><br><span class="line"> killall python3</span><br><span class="line">;;</span><br><span class="line">restart)</span><br><span class="line"></span><br><span class="line"> killall python3</span><br><span class="line"> /usr/bin/python3 /app/waifu2x-webui/WebUI-Waifu2x-Vulkan-Linux.py&amp;</span><br><span class="line">;;</span><br><span class="line">esac</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<p>控制服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">chmod 755 /etc/init.d/waifu2x-webui	//更改脚本权限</span><br><span class="line">update-rc.d waifu2x-webui defaults		//加入服务</span><br><span class="line">/lib/systemd/systemd-sysv-install enable waifu2x-webui</span><br><span class="line">service waifu2x-webui restart			//重启服务</span><br><span class="line">systemctl enable waifu2x-webui			//服务开机自启</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://github.com/nagadomi/waifu2x">nagadomi-waifu2x</a>: 直接魔改的原网页<br><a target="_blank" rel="noopener" href="https://github.com/tonquer/waifu2x-vulkan">Waifu2x-vulkan</a>：本项目使用了此库<br><a target="_blank" rel="noopener" href="https://github.com/yu45020/Waifu2x">Waifu2x PyTorch</a>: 本项目使用了此库</p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Intelligence/" rel="tag">Intelligence</a> <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Media/" rel="tag">Media</a> <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Server/" rel="tag">Server</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4015/"
+                    data-tooltip="软件储备"
+                    aria-label="上一篇: 软件储备"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2008/"
+                    data-tooltip="StableDiffusion服务器搭建"
+                    aria-label="下一篇: StableDiffusion服务器搭建"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4015/"
+                    data-tooltip="软件储备"
+                    aria-label="上一篇: 软件储备"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2008/"
+                    data-tooltip="StableDiffusion服务器搭建"
+                    aria-label="下一篇: StableDiffusion服务器搭建"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

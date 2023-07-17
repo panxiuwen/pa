@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>论文相关笔记 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍Origin、MathType、Endnote20、SPSS、论文切分、论文纠错查重等相关笔记\n\n\n\n\nOffice相关三大组件生成的文档都可以改名为.zip后解压查看\nWord相关使用撇号的时候用&#39;，而不是’，有时候会出现显示问题，值得注意在编辑文档前先设置好图片的分辨率，推荐330如果文档较大的话，可以把文档后缀加.zip，解压后看看那些文件出了问题删除全部图片：替换^p为空格删除作者信息：文件-&gt;信息-&gt;右键删除如果导出的pdf缺失部分图像：选项-&gt;显示-&gt;打印选项-&gt;打印在Word中创建的图形\n设置Office不压缩图像选项-&gt;高级-&gt;不压缩文件中的图像如果图像过大，建议选择高保真，不影响打印和观看，如果是位图，建议使用png格式，体积又小质量又高jpg格式会出现色块PS：貌似只针对单个文档生效\n\nOrigin使用Origin插件下载Tafel Extrapolation：Tafel拟合插件Mask or Change Data in Contour：屏蔽点插件\nOrigin模板的使用存模板File -&gt; Save Template As使用模板选中数据 -&gt; Plot -&gt; Template Library尽量不要存一半是线一半是点的模板\n画双Y轴Origin的双Y轴的逻辑为X轴 Y1轴 X轴 Y2轴 X轴 Y1轴 X轴 Y2轴…\n屏蔽三维荧光中的瑞利散射下载Mask or Change Data in Contour插件，\nXPS分峰添加阴影方案1在Plot Details中选中曲线 -&gt; Fill Area Under Curve Enable -&gt; Normal&#x2F;Base Auto -&gt; Pattern Fill里选Tow Colors将Background线里的Fill改为白色，可以在线里调transparency\n方案2在Plot Details中选中曲线 -&gt; Fill Area Under Curve Enable -&gt; File to date plot- One Color -&gt; Pattern Fill里选Tow Colors可以在线里调transparency\n方案3(不推荐)单击选中曲线 -&gt; Gadgets -&gt; Integrate在弹出的Dialog的Integration勾选Keep the shading color after New Output, Baseline里的Mode选Use Exitsting Dateset，选择好积分位置后点击阴影右上角箭头，选择New Output，后点X关闭双击阴影，在Dialog的Fill选项的Gradient Fill里选择Two Colors\n\n其他问题如果出现峰相互遮住的话，双击页面左上角的1，打开PlotSetup，在出现的菜单里上下调整曲线如果需要自定义刻度内容，在Tick Lable -&gt; Display里设置Type -&gt; Tick-indexed string 再设置String内容，用空格隔开\n\nMathType插入带编号的公式MathType-&gt;插入编号节编号：✓公式编号：✓附件：()分隔符：-新的公式编号：✓整个文档：✓自动更新公式编号：✓\n自动编号失效实测格式化公式不行，再插入一下公式就行\n隐藏分隔符样式-&gt;MTEquationSection-&gt;修改样式-&gt;格式—&gt;字体-&gt;隐藏-&gt;确定\n禁用插件把C:\\Program Files\\Microsoft Office\\root\\Office16\\STARTUP里的MathType Commands 2016.dotm后缀名改了\n\nEndnote使用谨记：Endnote导入的文献可能不规范，请注意期刊是否简写，或首字母是否大写，导出文献后检查上下标和菌种斜体\n文献style文件存放目录可自行编辑后分析存储C:\\Users\\你的用户名\\Documents\\EndNote\\Styles放在安装目录里也行，一般是C:\\Program Files (x86)\\EndNote 20\\Styles\n插入后显示{Author，#year}插入文献后，点击一下Bibliography里面的Update Citation and Bibliography\n修改杂志的缩写菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Journal Name” -&gt; “Abbreviation X”菜单 -&gt; “Library” -&gt; “Open Term List” -&gt; “Journals Term List”-&gt; “Edit Term”Term文件位置”&#x2F;PATH&#x2F;Terms Lists”\n修改引用格式菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Bibliography” -&gt; “Templates”引文格式位置”&#x2F;PATH&#x2F;Style”\n修改显示页码菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Page Number” -&gt; Show the full range of pages\nWord引用的Endnote库部分丢失或不全Word角标-&gt;右键-&gt;Edit Citation-&gt;More-&gt;Tools-&gt;Export traveling library\n\nSPSS 22使用下载并安装SPSS 22 64bit激活码\n19DNCAF2O3QVDV7FBIO696OO6GWLNXZPPRYTPWF2PPX7C8T6Y24LMVV2ET7DOLX5CXAL5YDLL79UPGEFCPDXP5Q8O5E\nANOVA分析将数据整理整理好，其中一组为带注释编号的一个分组\n\n菜单-分析-比较平均值-单因素ANOVA\n\n因变量列表添加因素，因子填分组编号的那一组选项勾选描述性，事后多重比较勾选LSD，Waller-Duncan\n\n在均一子集里找到分组\n\n\n论文纠错中文秘塔写作猫：写中文论文巨好用，每日免费3000字爱校对：并不是很聪明的样子，但是人家免费，还有集成Office插件讯飞智检：感觉好贵Chinesecorrection：老外出的\n英文微软爱写作：国内的，不知道为什么要碰瓷微软火山写作Wordtune：英语语法检查器，注册登陆需能访问GoogleGrammarly：英语语法检查器，不太稳定Quillbot：英语句式&#x2F;单词替换，注册登陆需能访问GoogleSpinbot：跟Quillbot差不多Virtualwritingtutor：好像用不了\n论文查重在查重的时候，最好将所有图片删除，更不能有类似Origin对象的原始数据存在，数据可能存在泄漏的风险，别问我怎么知道的\n每天免费查重一次的网站如果要付费的话，可能打开方式不对PaperYYPaperGePaperAskPaperWord论文狗PaperLike\n无限查重PapeRedPaperCrazy\n一些色彩代码墨绿：#669999粉紫：#C597E6亮绿：#8EFF8E粉红：#FAB1D8蟹黄：#FFA74F亮蓝：#4ADDC7青：#00CBCC棕：#7D4E4E橙：#FB6501RainBow红ED5F5F橙FFA74F黄FEF8BC绿B0FFB0青6FFFFF蓝64B1FF紫6760F7\n\nWPS word拆分按Alt+F11键打开VB，新建一个模块，填入下面代码，点运行-&gt;运行子过程&#x2F;窗体，结束就好了\nBottle_ExampleVBA123456789101112131415161718192021222324252627282930313233343536373839404142Option ExplicitSub DynamicSplitPagesAsDocuments()Dim oSrcDoc As Document, oNewDoc As DocumentDim strSrcName As String, strNewName As StringDim oRange As RangeDim nIndex As Integer, nSubIndex As Integer, nTotalPages As Integer, nBound As IntegerDim fso As ObjectConst nSteps = 2Set fso = CreateObject(\"Scripting.FileSystemObject\")Set oSrcDoc = ActiveDocumentSet oRange = oSrcDoc.ContentnTotalPages = ActiveDocument.Content.Information(wdNumberOfPagesInDocument)oRange.Collapse wdCollapseStartoRange.SelectFor nIndex = 1 To nTotalPages Step nStepsSet oNewDoc = Documents.AddIf nIndex + nSteps &gt; nTotalPages ThennBound = nTotalPagesElsenBound = nIndex + nSteps - 1End IfFor nSubIndex = nIndex To nBoundoSrcDoc.ActivateoSrcDoc.Bookmarks(\"\\page\").Range.CopyoSrcDoc.Windows(1).ActivateApplication.Browser.Target = wdBrowsePageApplication.Browser.NextoNewDoc.ActivateoNewDoc.Windows(1).Selection.PasteNext nSubIndexstrSrcName = oSrcDoc.FullNamestrNewName = fso.BuildPath(fso.GetParentFolderName(strSrcName), _fso.GetBaseName(strSrcName) &amp; \"_\" &amp; (nIndex \\ nSteps) &amp; \".\" &amp; fso.GetExtensionName(strSrcName))oNewDoc.SaveAs strNewNameoNewDoc.Close FalseNext nIndexSet oNewDoc = NothingSet oRange = NothingSet oSrcDoc = NothingSet fso = NothingMsgBox \"结束!\"End Sub\n\n参考如何根据SPSS中LSD方差分析结果标记字母【MathType 7.4】公式分章节编号，实现（1-1）、（2-1）MathType分隔符显示与隐藏按指定页数动态拆分Word文档，这样的Word拆分真是太实用了！\n","dateCreated":"2022-10-01T00:00:00+08:00","dateModified":"2023-07-03T16:38:26+08:00","datePublished":"2022-10-01T00:00:00+08:00","description":"本文介绍Origin、MathType、Endnote20、SPSS、论文切分、论文纠错查重等相关笔记","headline":"论文相关笔记","image":["cover.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2021/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2021/","keywords":"Research","thumbnailUrl":"cover.jpg"}</script>
+    <meta name="description" content="本文介绍Origin、MathType、Endnote20、SPSS、论文切分、论文纠错查重等相关笔记">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="论文相关笔记">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2021/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍Origin、MathType、Endnote20、SPSS、论文切分、论文纠错查重等相关笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/05.jpg">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/01.png">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/02.png">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/03.png">
+<meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/04.png">
+<meta property="article:published_time" content="2022-09-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-03T08:38:26.000Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://panxiuwen.github.io/pa/posts/2021/05.jpg">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2021/cover.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2021/cover.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            论文相关笔记
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2022-10-01T00:00:00+08:00">
+	
+		    2022年 10月 01日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Research/">Research</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍Origin、MathType、Endnote20、SPSS、论文切分、论文纠错查重等相关笔记</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Office%E7%9B%B8%E5%85%B3"><span class="toc-text">Office相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Word%E7%9B%B8%E5%85%B3"><span class="toc-text">Word相关</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEOffice%E4%B8%8D%E5%8E%8B%E7%BC%A9%E5%9B%BE%E5%83%8F"><span class="toc-text">设置Office不压缩图像</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Origin%E4%BD%BF%E7%94%A8"><span class="toc-text">Origin使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Origin%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="toc-text">Origin插件下载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Origin%E6%A8%A1%E6%9D%BF%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">Origin模板的使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%BB%E5%8F%8CY%E8%BD%B4"><span class="toc-text">画双Y轴</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%8F%E8%94%BD%E4%B8%89%E7%BB%B4%E8%8D%A7%E5%85%89%E4%B8%AD%E7%9A%84%E7%91%9E%E5%88%A9%E6%95%A3%E5%B0%84"><span class="toc-text">屏蔽三维荧光中的瑞利散射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#XPS%E5%88%86%E5%B3%B0%E6%B7%BB%E5%8A%A0%E9%98%B4%E5%BD%B1"><span class="toc-text">XPS分峰添加阴影</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%B9%E6%A1%881"><span class="toc-text">方案1</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%B9%E6%A1%882"><span class="toc-text">方案2</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%96%B9%E6%A1%883-%E4%B8%8D%E6%8E%A8%E8%8D%90"><span class="toc-text">方案3(不推荐)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="toc-text">其他问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MathType"><span class="toc-text">MathType</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%B8%A6%E7%BC%96%E5%8F%B7%E7%9A%84%E5%85%AC%E5%BC%8F"><span class="toc-text">插入带编号的公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E7%BC%96%E5%8F%B7%E5%A4%B1%E6%95%88"><span class="toc-text">自动编号失效</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E5%88%86%E9%9A%94%E7%AC%A6"><span class="toc-text">隐藏分隔符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A6%81%E7%94%A8%E6%8F%92%E4%BB%B6"><span class="toc-text">禁用插件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Endnote%E4%BD%BF%E7%94%A8"><span class="toc-text">Endnote使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E7%8C%AEstyle%E6%96%87%E4%BB%B6%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95"><span class="toc-text">文献style文件存放目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E5%90%8E%E6%98%BE%E7%A4%BA-Author%EF%BC%8C-year"><span class="toc-text">插入后显示{Author，#year}</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9D%82%E5%BF%97%E7%9A%84%E7%BC%A9%E5%86%99"><span class="toc-text">修改杂志的缩写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%BC%95%E7%94%A8%E6%A0%BC%E5%BC%8F"><span class="toc-text">修改引用格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%98%BE%E7%A4%BA%E9%A1%B5%E7%A0%81"><span class="toc-text">修改显示页码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Word%E5%BC%95%E7%94%A8%E7%9A%84Endnote%E5%BA%93%E9%83%A8%E5%88%86%E4%B8%A2%E5%A4%B1%E6%88%96%E4%B8%8D%E5%85%A8"><span class="toc-text">Word引用的Endnote库部分丢失或不全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SPSS-22%E4%BD%BF%E7%94%A8"><span class="toc-text">SPSS 22使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%B9%B6%E5%AE%89%E8%A3%85"><span class="toc-text">下载并安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ANOVA%E5%88%86%E6%9E%90"><span class="toc-text">ANOVA分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%BA%A0%E9%94%99"><span class="toc-text">论文纠错</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E6%96%87"><span class="toc-text">中文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8B%B1%E6%96%87"><span class="toc-text">英文</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E6%9F%A5%E9%87%8D"><span class="toc-text">论文查重</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%8F%E5%A4%A9%E5%85%8D%E8%B4%B9%E6%9F%A5%E9%87%8D%E4%B8%80%E6%AC%A1%E7%9A%84%E7%BD%91%E7%AB%99"><span class="toc-text">每天免费查重一次的网站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E9%99%90%E6%9F%A5%E9%87%8D"><span class="toc-text">无限查重</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E8%89%B2%E5%BD%A9%E4%BB%A3%E7%A0%81"><span class="toc-text">一些色彩代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WPS-word%E6%8B%86%E5%88%86"><span class="toc-text">WPS word拆分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+<hr>
+<h3 id="Office相关"><a href="#Office相关" class="headerlink" title="Office相关"></a>Office相关</h3><p>三大组件生成的文档都可以改名为<code>.zip</code>后解压查看</p>
+<h4 id="Word相关"><a href="#Word相关" class="headerlink" title="Word相关"></a>Word相关</h4><p>使用撇号的时候用<code>&#39;</code>，而不是<code>’</code>，有时候会出现显示问题，值得注意<br>在编辑文档前先设置好图片的分辨率，推荐330<br>如果文档较大的话，可以把文档后缀加.zip，解压后看看那些文件出了问题<br>删除全部图片：替换^p为空格<br>删除作者信息：文件-&gt;信息-&gt;右键删除<br>如果导出的pdf缺失部分图像：选项-&gt;显示-&gt;打印选项-&gt;打印在Word中创建的图形</p>
+<h4 id="设置Office不压缩图像"><a href="#设置Office不压缩图像" class="headerlink" title="设置Office不压缩图像"></a>设置Office不压缩图像</h4><p>选项-&gt;高级-&gt;不压缩文件中的图像<br>如果图像过大，建议选择高保真，不影响打印和观看，如果是位图，建议使用<code>png</code>格式，体积又小质量又高<code>jpg</code>格式会出现色块<br>PS：貌似只针对单个文档生效</p>
+<hr>
+<h3 id="Origin使用"><a href="#Origin使用" class="headerlink" title="Origin使用"></a>Origin使用</h3><h4 id="Origin插件下载"><a href="#Origin插件下载" class="headerlink" title="Origin插件下载"></a>Origin插件下载</h4><p><a target="_blank" rel="noopener" href="https://www.originlab.com/fileExchange/details.aspx?fid=219">Tafel Extrapolation</a>：Tafel拟合插件<br><a target="_blank" rel="noopener" href="https://www.originlab.com/fileExchange/details.aspx?fid=442">Mask or Change Data in Contour</a>：屏蔽点插件</p>
+<h4 id="Origin模板的使用"><a href="#Origin模板的使用" class="headerlink" title="Origin模板的使用"></a>Origin模板的使用</h4><p>存模板<br>File -&gt; Save Template As<br>使用模板<br>选中数据 -&gt; Plot -&gt; Template Library<br><strong>尽量不要存一半是线一半是点的模板</strong></p>
+<h4 id="画双Y轴"><a href="#画双Y轴" class="headerlink" title="画双Y轴"></a>画双Y轴</h4><p>Origin的双Y轴的逻辑为X轴 Y1轴 X轴 Y2轴 X轴 Y1轴 X轴 Y2轴…</p>
+<h4 id="屏蔽三维荧光中的瑞利散射"><a href="#屏蔽三维荧光中的瑞利散射" class="headerlink" title="屏蔽三维荧光中的瑞利散射"></a>屏蔽三维荧光中的瑞利散射</h4><p>下载Mask or Change Data in Contour插件，</p>
+<h4 id="XPS分峰添加阴影"><a href="#XPS分峰添加阴影" class="headerlink" title="XPS分峰添加阴影"></a>XPS分峰添加阴影</h4><h5 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h5><p>在Plot Details中选中曲线 -&gt; Fill Area Under Curve Enable -&gt; Normal&#x2F;Base Auto -&gt; Pattern Fill里选Tow Colors<br>将Background线里的Fill改为白色，可以在线里调transparency</p>
+<h5 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h5><p>在Plot Details中选中曲线 -&gt; Fill Area Under Curve Enable -&gt; File to date plot- One Color -&gt; Pattern Fill里选Tow Colors<br>可以在线里调transparency</p>
+<h5 id="方案3-不推荐"><a href="#方案3-不推荐" class="headerlink" title="方案3(不推荐)"></a>方案3(不推荐)</h5><p>单击选中曲线 -&gt; Gadgets -&gt; Integrate<br>在弹出的Dialog的Integration勾选Keep the shading color after New Output, Baseline里的Mode选Use Exitsting Dateset，选择好积分位置后点击阴影右上角箭头，选择New Output，后点X关闭<br>双击阴影，在Dialog的Fill选项的Gradient Fill里选择Two Colors</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="05.jpg" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="05.jpg" alt=""></a></div>
+<h4 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h4><p>如果出现峰相互遮住的话，双击页面左上角的1，打开PlotSetup，在出现的菜单里上下调整曲线<br>如果需要自定义刻度内容，在Tick Lable -&gt; Display里设置Type -&gt; Tick-indexed string 再设置String内容，用空格隔开</p>
+<hr>
+<h3 id="MathType"><a href="#MathType" class="headerlink" title="MathType"></a>MathType</h3><h4 id="插入带编号的公式"><a href="#插入带编号的公式" class="headerlink" title="插入带编号的公式"></a>插入带编号的公式</h4><p>MathType-&gt;插入编号<br>节编号：✓<br>公式编号：✓<br>附件：()<br>分隔符：-<br>新的公式编号：✓<br>整个文档：✓<br>自动更新公式编号：✓</p>
+<h4 id="自动编号失效"><a href="#自动编号失效" class="headerlink" title="自动编号失效"></a>自动编号失效</h4><p>实测格式化公式不行，再插入一下公式就行</p>
+<h4 id="隐藏分隔符"><a href="#隐藏分隔符" class="headerlink" title="隐藏分隔符"></a>隐藏分隔符</h4><p>样式-&gt;MTEquationSection-&gt;修改样式-&gt;格式—&gt;字体-&gt;隐藏-&gt;确定</p>
+<h4 id="禁用插件"><a href="#禁用插件" class="headerlink" title="禁用插件"></a>禁用插件</h4><p>把<code>C:\Program Files\Microsoft Office\root\Office16\STARTUP</code>里的<code>MathType Commands 2016.dotm</code>后缀名改了</p>
+<hr>
+<h3 id="Endnote使用"><a href="#Endnote使用" class="headerlink" title="Endnote使用"></a>Endnote使用</h3><p><strong>谨记：Endnote导入的文献可能不规范，请注意期刊是否简写，或首字母是否大写，导出文献后检查上下标和菌种斜体</strong></p>
+<h4 id="文献style文件存放目录"><a href="#文献style文件存放目录" class="headerlink" title="文献style文件存放目录"></a>文献style文件存放目录</h4><p>可自行编辑后分析存储<br><code>C:\Users\你的用户名\Documents\EndNote\Styles</code><br>放在安装目录里也行，一般是<br><code>C:\Program Files (x86)\EndNote 20\Styles</code></p>
+<h4 id="插入后显示-Author，-year"><a href="#插入后显示-Author，-year" class="headerlink" title="插入后显示{Author，#year}"></a>插入后显示{Author，#year}</h4><p>插入文献后，点击一下Bibliography里面的Update Citation and Bibliography</p>
+<h4 id="修改杂志的缩写"><a href="#修改杂志的缩写" class="headerlink" title="修改杂志的缩写"></a>修改杂志的缩写</h4><p>菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Journal Name” -&gt; “Abbreviation X”<br>菜单 -&gt; “Library” -&gt; “Open Term List” -&gt; “Journals Term List”-&gt; “Edit Term”<br>Term文件位置”&#x2F;PATH&#x2F;Terms Lists”</p>
+<h4 id="修改引用格式"><a href="#修改引用格式" class="headerlink" title="修改引用格式"></a>修改引用格式</h4><p>菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Bibliography” -&gt; “Templates”<br>引文格式位置”&#x2F;PATH&#x2F;Style”</p>
+<h4 id="修改显示页码"><a href="#修改显示页码" class="headerlink" title="修改显示页码"></a>修改显示页码</h4><p>菜单 -&gt; “Tools” -&gt; “Output Style” -&gt; “Edit” -&gt; “Page Number” -&gt; Show the full range of pages</p>
+<h4 id="Word引用的Endnote库部分丢失或不全"><a href="#Word引用的Endnote库部分丢失或不全" class="headerlink" title="Word引用的Endnote库部分丢失或不全"></a>Word引用的Endnote库部分丢失或不全</h4><p>Word角标-&gt;右键-&gt;Edit Citation-&gt;More-&gt;Tools-&gt;Export traveling library</p>
+<hr>
+<h3 id="SPSS-22使用"><a href="#SPSS-22使用" class="headerlink" title="SPSS 22使用"></a>SPSS 22使用</h3><h4 id="下载并安装"><a href="#下载并安装" class="headerlink" title="下载并安装"></a>下载并安装</h4><p>SPSS 22 64bit激活码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9DNCAF2O3QVDV7FBIO696OO6GWLNXZPPRYTPWF2PPX7C8T6Y24LMVV2ET7DOLX5CXAL5YDLL79UPGEFCPDXP5Q8O5E</span><br></pre></td></tr></table></figure>
+<h4 id="ANOVA分析"><a href="#ANOVA分析" class="headerlink" title="ANOVA分析"></a>ANOVA分析</h4><p>将数据整理整理好，其中一组为带注释编号的一个分组</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="01.png" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="01.png" alt=""></a></div>
+<p>菜单-分析-比较平均值-单因素ANOVA</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="02.png" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="02.png" alt=""></a></div>
+<p>因变量列表添加因素，因子填分组编号的那一组<br>选项勾选描述性，事后多重比较勾选LSD，Waller-Duncan</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="03.png" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="03.png" alt=""></a></div>
+<p>在均一子集里找到分组</p>
+<div class="figure center" style="width:;"><a class="fancybox" href="04.png" title="" data-caption="" data-fancybox="default"><img class="fig-img" src="04.png" alt=""></a></div>
+<hr>
+<h3 id="论文纠错"><a href="#论文纠错" class="headerlink" title="论文纠错"></a>论文纠错</h3><h4 id="中文"><a href="#中文" class="headerlink" title="中文"></a>中文</h4><p><a target="_blank" rel="noopener" href="https://xiezuocat.com/">秘塔写作猫</a>：写中文论文巨好用，每日免费3000字<br><a target="_blank" rel="noopener" href="https://www.ijiaodui.com/workbench/">爱校对</a>：并不是很聪明的样子，但是人家免费，还有集成Office插件<br><a target="_blank" rel="noopener" href="https://zj.xfyun.cn/">讯飞智检</a>：感觉好贵<br><a target="_blank" rel="noopener" href="https://www.chinesecorrection.com/">Chinesecorrection</a>：老外出的</p>
+<h4 id="英文"><a href="#英文" class="headerlink" title="英文"></a>英文</h4><p><a target="_blank" rel="noopener" href="http://aimwriting.mtutor.engkoo.com/">微软爱写作</a>：国内的，不知道为什么要碰瓷微软<br><a target="_blank" rel="noopener" href="https://www.writingo.net/">火山写作</a><br><a target="_blank" rel="noopener" href="https://app.wordtune.com/">Wordtune</a>：英语语法检查器，注册登陆需能访问Google<br><a target="_blank" rel="noopener" href="https://app.grammarly.com/">Grammarly</a>：英语语法检查器，不太稳定<br><a target="_blank" rel="noopener" href="https://quillbot.com/">Quillbot</a>：英语句式&#x2F;单词替换，注册登陆需能访问Google<br><a target="_blank" rel="noopener" href="https://spinbot.com/">Spinbot</a>：跟Quillbot差不多<br><a target="_blank" rel="noopener" href="https://www.virtualwritingtutor.com/">Virtualwritingtutor</a>：好像用不了</p>
+<h3 id="论文查重"><a href="#论文查重" class="headerlink" title="论文查重"></a>论文查重</h3><p>在查重的时候，最好将所有图片删除，更不能有类似Origin对象的原始数据存在，数据可能存在泄漏的风险，别问我怎么知道的</p>
+<h4 id="每天免费查重一次的网站"><a href="#每天免费查重一次的网站" class="headerlink" title="每天免费查重一次的网站"></a>每天免费查重一次的网站</h4><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/370425543/answer/2435804145">如果要付费的话，可能打开方式不对</a><br>PaperYY<br>PaperGe<br>PaperAsk<br>PaperWord<br>论文狗<br>PaperLike</p>
+<h4 id="无限查重"><a href="#无限查重" class="headerlink" title="无限查重"></a>无限查重</h4><p>PapeRed<br>PaperCrazy</p>
+<h3 id="一些色彩代码"><a href="#一些色彩代码" class="headerlink" title="一些色彩代码"></a>一些色彩代码</h3><p>墨绿：#669999<br>粉紫：#C597E6<br>亮绿：#8EFF8E<br>粉红：#FAB1D8<br>蟹黄：#FFA74F<br>亮蓝：#4ADDC7<br>青：#00CBCC<br>棕：#7D4E4E<br>橙：#FB6501<br>RainBow<br>红ED5F5F<br>橙FFA74F<br>黄FEF8BC<br>绿B0FFB0<br>青6FFFFF<br>蓝64B1FF<br>紫6760F7</p>
+<hr>
+<h3 id="WPS-word拆分"><a href="#WPS-word拆分" class="headerlink" title="WPS word拆分"></a>WPS word拆分</h3><p>按Alt+F11键打开VB，新建一个模块，填入下面代码，点运行-&gt;运行子过程&#x2F;窗体，结束就好了</p>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>Bottle_Example</span><ul class="tabs"><li class="tab active">VBA</li></ul></figcaption><div class="tabs-content"><figure class="highlight plaintext" style="display: block;"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">Option Explicit</span><br><span class="line">Sub DynamicSplitPagesAsDocuments()</span><br><span class="line">Dim oSrcDoc As Document, oNewDoc As Document</span><br><span class="line">Dim strSrcName As String, strNewName As String</span><br><span class="line">Dim oRange As Range</span><br><span class="line">Dim nIndex As Integer, nSubIndex As Integer, nTotalPages As Integer, nBound As Integer</span><br><span class="line">Dim fso As Object</span><br><span class="line">Const nSteps = 2</span><br><span class="line">Set fso = CreateObject("Scripting.FileSystemObject")</span><br><span class="line">Set oSrcDoc = ActiveDocument</span><br><span class="line">Set oRange = oSrcDoc.Content</span><br><span class="line">nTotalPages = ActiveDocument.Content.Information(wdNumberOfPagesInDocument)</span><br><span class="line">oRange.Collapse wdCollapseStart</span><br><span class="line">oRange.Select</span><br><span class="line">For nIndex = 1 To nTotalPages Step nSteps</span><br><span class="line">Set oNewDoc = Documents.Add</span><br><span class="line">If nIndex + nSteps &gt; nTotalPages Then</span><br><span class="line">nBound = nTotalPages</span><br><span class="line">Else</span><br><span class="line">nBound = nIndex + nSteps - 1</span><br><span class="line">End If</span><br><span class="line">For nSubIndex = nIndex To nBound</span><br><span class="line">oSrcDoc.Activate</span><br><span class="line">oSrcDoc.Bookmarks("\page").Range.Copy</span><br><span class="line">oSrcDoc.Windows(1).Activate</span><br><span class="line">Application.Browser.Target = wdBrowsePage</span><br><span class="line">Application.Browser.Next</span><br><span class="line">oNewDoc.Activate</span><br><span class="line">oNewDoc.Windows(1).Selection.Paste</span><br><span class="line">Next nSubIndex</span><br><span class="line">strSrcName = oSrcDoc.FullName</span><br><span class="line">strNewName = fso.BuildPath(fso.GetParentFolderName(strSrcName), _</span><br><span class="line">fso.GetBaseName(strSrcName) &amp; "_" &amp; (nIndex \ nSteps) &amp; "." &amp; fso.GetExtensionName(strSrcName))</span><br><span class="line">oNewDoc.SaveAs strNewName</span><br><span class="line">oNewDoc.Close False</span><br><span class="line">Next nIndex</span><br><span class="line">Set oNewDoc = Nothing</span><br><span class="line">Set oRange = Nothing</span><br><span class="line">Set oSrcDoc = Nothing</span><br><span class="line">Set fso = Nothing</span><br><span class="line">MsgBox "结束!"</span><br><span class="line">End Sub</span><br></pre></td></tr></tbody></table></figure></div></figure>
+<hr>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1j4411i7Kf">如何根据SPSS中LSD方差分析结果标记字母</a><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Hi4y1N7t9/">【MathType 7.4】公式分章节编号，实现（1-1）、（2-1）</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43668420/article/details/123310066">MathType分隔符显示与隐藏</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/389477419">按指定页数动态拆分Word文档，这样的Word拆分真是太实用了！</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Research/" rel="tag">Research</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2008/"
+                    data-tooltip="StableDiffusion服务器搭建"
+                    aria-label="上一篇: StableDiffusion服务器搭建"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3006/"
+                    data-tooltip="顾子明说"
+                    aria-label="下一篇: 顾子明说"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2008/"
+                    data-tooltip="StableDiffusion服务器搭建"
+                    aria-label="上一篇: StableDiffusion服务器搭建"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/3006/"
+                    data-tooltip="顾子明说"
+                    aria-label="下一篇: 顾子明说"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

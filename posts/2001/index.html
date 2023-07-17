@@ -1,0 +1,724 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>搭建Web服务器 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"本文介绍如何搭建web服务器\n\n\n\n\nAndroid下使用KSWeb网上随便找个3.986破解版就行，老版我遇到过很严重的bug。在root环境下只有Lighthttpd能使用80端口，Apache和Nginx不能使用80端口，具体是Apache使用80端口就无法启动，Nginx启动后所有界面403。LinuxDeploy和Termux运行http服务器都不完美，介意MySQL的话不建议使用。\n\nWindows下使用Phpstudy如果只是调试且需要配置MySQL，建议使用Phpstudy，很方便，不仅带GUI界面，而且各个软件版本都可以随意更换Phpstudy开机自启，管理员启动命令行，使用命令安装服务，并设置开启启动\n12mysqld install mysqlhttpd.exe -k install\nPhpstudy的反向代理在Apache2.4.39\\conf\\vhosts\\0localhost_80.conf文件中设置\n\nphp相关安装安装php7.4\n1apt-get install php7.4 php7.4-fpm php7.4-mysql php7.4-curl php7.4-gd php7.4-mbstring php7.4-xml php7.4-xmlrpc php7.4-zip php7.4-opcache php7.4-bcmath php7.4-bz2 php7.4-odbc php7.4-gmp php7.4-imap php7.4-ldap php-json\n安装php8.X\n12345apt install -y lsb-release ca-certificates apt-transport-https software-properties-commonecho &quot;deb https://packages.sury.org/php/ $(lsb_release -sc) main&quot; | tee /etc/apt/sources.list.d/sury-php.listwget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -apt updateapt-get install php8.1 php8.1-fpm php8.1-mysql php8.1-curl php8.1-gd php8.1-mbstring php8.1-xml php8.1-xmlrpc php8.1-zip php8.1-opcache php8.1-bcmath php8.1-bz2 php8.1-odbc php8.1-gmp php8.1-imap php8.1-ldap php-json\n安装composer\n1234wget https://getcomposer.org/composer.pharmv composer.phar /usr/local/bin/composercomposer config -g repo.packagist composer https://mirrors.aliyun.com/composer/composer config -g -l repo.packagist\n测试php信息123&lt;?php phpinfo();?&gt;\n切换php版本查询使用的php版本\n1ls -lha /etc/alternatives | grep php\n切换到7.4\n1update-alternatives --set php /usr/bin/php7.4\n卸载指定版本的php\n1apt-get autoremove php8*\n查找php配置文件位置，其实是不对的\n1find / -name php.ini\n或者\n1php -i |grep php\\.ini\ncomposer安装1234php -r &quot;copy(&#x27;https://install.phpcomposer.com/installer&#x27;, &#x27;composer-setup.php&#x27;);&quot;php composer-setup.phpmv composer.phar /usr/local/bin/composercomposer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/\n\nphp性能设置12nano /etc/php/7.4/fpm/php-fpm.confnano /etc/php/7.4/fpm/php.ini\n重启php生效\n1service php7.4-fpm restart\n\nNginx相关debian系安装：apt-get install nginx\n基本配置1nano /etc/nginx/nginx.conf\n将user nginx改为user www-data注释掉log，并修改worker_processes 8;重载配置文件nginx -s reload如果出现nginx: configuration file /etc/nginx/nginx.conf test failed，使用nginx -t\n配置php打开站点文件nano /etc/nginx/sites-available/default在第五行Index后添加index.php，再添加默认php\n1234location ~ \\.php$ &#123;    include snippets/fastcgi-php.conf;       fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;&#125;\n对于需要另一个版本php的目录，使用\n123456location /inf/ &#123;       location ~ \\.php$ &#123;               include snippets/fastcgi-php.conf;               fastcgi_pass unix:/run/php/php8.2-fpm.sock;       &#125;&#125;\n重载配置文件nginx -s reload重启服务器systemctl restart nginx\n添加访问密码安装插件apt-get install apache2-utils在/etc/nginx目录执行htpasswd -bdc .htpasswd user password打开站点文件nano /etc/nginx/sites-available/default，添加\n1234location /123456/ &#123;auth_basic &quot;Please input password&quot;;auth_basic_user_file /etc/nginx/.htpasswd;&#125;\n然后打开浏览器访问，应该是需要输入密码了如果登陆后某些资源401，请检查域是否相同，例如使用192.168.1.X登录后某些页面请求了192.168.192.X\nNginx开启反向代理打开站点文件nano /etc/nginx/sites-available/default，添加写入\n123location /vs/ &#123;        proxy_pass   http://127.0.0.1:8886/;&#125;\nApache相关1.安装带php的apache服务器123456apt-get install apache2 php libapache2-mod-php php-fpmapt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-zip php-opcache php-bcmath php-bz2 php-odbc php-gmp php-imapa2enmod proxy_fcgi setenvifa2enconf php7.4-fpmsystemctl reload apache2systemctl restart apache2\n关闭日志\n1nano /etc/apache2/apache2.conf\n注释掉LogLevel warn和ErrorLog$&#123;APACHE_LOG_DIR&#125;/error.log\n增加超时特别是在wordpress要升级但是服务器又不是很给力的情况下替换\n123KeepAliveTimeout 5000MaxKeepAliveRequests 10000Timeout 60000\n\nWindows上的反向代理打开&#x2F;conf&#x2F;httpd.conf，写入\n1234567891011121314LoadModule proxy_module modules/mod_proxy.soLoadModule proxy_ajp_module modules/mod_proxy_ajp.soLoadModule proxy_http_module modules/mod_proxy_http.soLoadModule vhost_alias_module modules/mod_vhost_alias.soLoadModule proxy_connect_module modules/mod_proxy_connect.so LoadModule access_compat_module modules/mod_access_compat.so&lt;VirtualHost *:80&gt;\tProxyRequests Off\tProxyPass /sy/ http://127.0.0.1:8384/\tProxyPassReverse /sy/ http://127.0.0.1:8384/\tProxyPass /vs/ http://127.0.0.1:8886/\tProxyPassReverse /vs/ http://127.0.0.1:8886/&lt;/VirtualHost&gt;\nLinux上的反向代理开启模块\n123456a2enmod proxya2enmod proxy_ajpa2enmod proxy_httpa2enmod vhost_aliasa2enmod proxy_connecta2enmod access_compat\n修改配置文件\n1nano /etc/apache2/apache2.conf\n写入\n1234567891011&lt;VirtualHost *:80&gt;\tProxyRequests Off\tProxyPass /sy/ http://127.0.0.1:8384/\tProxyPassReverse /sy/ http://127.0.0.1:8384/\tProxyPass /vs/ http://127.0.0.1:8384/\tProxyPassReverse /vs/ http://127.0.0.1:8384/\tProxyPass /wf/ http://127.0.0.1:2333/\tProxyPassReverse /wf/ http://127.0.0.1:2333/\tProxyPass /sd/ http://127.0.0.1:2334/ timeout=60000\tProxyPassReverse /sd/ http://127.0.0.1:2334/ timeout=60000&lt;/VirtualHost&gt;\n注：对于事件超过2分钟的应用，需设置timeout对于https\n12345&lt;VirtualHost *:443&gt;\tProxyRequests Off\tProxyPass /wm/ https://127.0.0.1:10000/\tProxyPassReverse /wm/ https://127.0.0.1:10000/&lt;/VirtualHost&gt;\n未通过测试，可能是没配置SSL重启服务器生效\n1systemctl restart apache2\n开启webdav启用模块\n12a2enmod dav_fsa2enmod dav\n添加端口\n1nano /etc/apache2/ports.conf\n添加\n1Listen 88\n配置文件\n1nano /etc/apache2/sites-available/webdav.conf\n添加主机，这个要放在配置文件最后\n1234567891011121314151617DavLockDB /var/www/webdav/DavLock  &lt;VirtualHost *:88&gt;      ServerAdmin root@localhost      DocumentRoot /var/www/webdav/sean/      Alias /webdav /var/www/webdav/sean/      &lt;Directory &quot;/var/www/webdav&quot;&gt;         DAV On         Options Indexes MultiViews         AllowOverride None         Order allow,deny         allow from all         AuthType Basic         AuthName &quot;sean&quot;         AuthUserFile /var/www/webdav/passwd.dav         Require valid-user       &lt;/Directory&gt; &lt;/VirtualHost&gt;\n激活\n1ln -s /etc/apache2/sites-available/webdav.conf /etc/apache2/conf-enabled/webdav.conf\n给权限\n123chown -R www-data /var/www/webdav/sean/torch /var/www/webdav/DavLockchown -R www-data  /var/www/webdav/DavLock\n创建密钥文件，最后关键字为登陆用户名。输入后要求输入两遍密码\n1htpasswd -c /var/www/webdav/passwd.dav sean\n使用链接http://192.168.192.200:88/webdav/ 进行访问\n\nMySQL相关安装123apt-get install mariadb-server mariadb-client php-mysqlservice apache2 restartservice mysqld restart\n配置MySQL登录数据库\n1mysql -u root -p\t//直接回车就行，没密码\n建立一个名为wordpress的数据库\n12CREATE DATABASE wordpress;CREATE DATABASE pichome;\n查看数据库是否创建成功\n1SHOW DATABASES;\n删除数据库\n1DROP DATABASE datebase;\n切换为mysql\n1use mysql\n查看用户和权限\n1SELECT User, Password, Host FROM user;\n授予远程主机访问数据库权限\n1GRANT ALL PRIVILEGES ON *.* TO &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;你的密码&#x27; WITH GRANT OPTION;\n如果要删除用户\n1delete from user where user=&#x27;root&#x27; and host=&#x27;0.0.0.0&#x27;;\n刷新用户和权限\n1FLUSH PRIVILEGES;\n卸载mysql12aptitude purge mariadb-serverrm -rf /var/lib/mysql\n重置数据库12345service mysql stoprm -rf /var/lib/mysqlmysql_install_dbservice mysql startmysqladmin -uroot -p password\n\n常见Web服务器比较\n\n\n  \n    Server\n    Apache\n    Nginx\n    Lighttpd\n  \n\n\n  \n    Proxy代理\n    非常好\n    非常好\n    一般\n  \n  \n    Rewriter\n    好\n    非常好\n    一般\n  \n  \n    Fcgi\n    不好\n    好\n    非常好\n  \n  \n    热部署\n    不支持\n    支持\n    不支持\n  \n  \n    系统压力比较\n    很大\n    很小\n    比较小\n  \n  \n    稳定性\n    好\n    非常好\n    不好\n  \n  \n    安全性\n    好\n    一般\n    一般\n  \n  \n    技术支持\n    非常好\n    很少\n    一般\n  \n  \n    静态文件处理\n    一般\n    非常好\n    好\n  \n  \n    Vhosts虚拟主机\n    支持\n    不支持\n    支持\n  \n  \n    反向代理\n    一股\n    非常好\n    一般\n  \n  \n    Session sticky\n    支持\n    不支持\n    支持\n  \n\n\n\n\n\n参考Apache+php环境配置搭建网站之二——Windows环境安装PHP开发环境Debian下用Apache2搭建WebDAV树莓派下Apache2配置WebDav\n","dateCreated":"2017-09-26T00:00:00+08:00","dateModified":"2023-05-30T17:51:59+08:00","datePublished":"2017-09-26T00:00:00+08:00","description":"本文介绍如何搭建web服务器","headline":"搭建Web服务器","image":["../10000/WebServer.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/2001/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/2001/","keywords":"Server","thumbnailUrl":"../10000/WebServer.jpg"}</script>
+    <meta name="description" content="本文介绍如何搭建web服务器">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="搭建Web服务器">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/2001/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="本文介绍如何搭建web服务器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-09-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-30T09:51:59.911Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Server">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/2001/../10000/WebServer.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/2001/../10000/WebServer.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            搭建Web服务器
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2017-09-26T00:00:00+08:00">
+	
+		    2017年 9月 26日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Server/">Server</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>本文介绍如何搭建web服务器</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Android%E4%B8%8B%E4%BD%BF%E7%94%A8KSWeb"><span class="toc-text">Android下使用KSWeb</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows%E4%B8%8B%E4%BD%BF%E7%94%A8Phpstudy"><span class="toc-text">Windows下使用Phpstudy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E7%9B%B8%E5%85%B3"><span class="toc-text">php相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95php%E4%BF%A1%E6%81%AF"><span class="toc-text">测试php信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%87%E6%8D%A2php%E7%89%88%E6%9C%AC"><span class="toc-text">切换php版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#composer%E5%AE%89%E8%A3%85"><span class="toc-text">composer安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#php%E6%80%A7%E8%83%BD%E8%AE%BE%E7%BD%AE"><span class="toc-text">php性能设置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx%E7%9B%B8%E5%85%B3"><span class="toc-text">Nginx相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="toc-text">基本配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEphp"><span class="toc-text">配置php</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81"><span class="toc-text">添加访问密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Nginx%E5%BC%80%E5%90%AF%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">Nginx开启反向代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache%E7%9B%B8%E5%85%B3"><span class="toc-text">Apache相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85%E5%B8%A6php%E7%9A%84apache%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">1.安装带php的apache服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E5%8A%A0%E8%B6%85%E6%97%B6"><span class="toc-text">增加超时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows%E4%B8%8A%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">Windows上的反向代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Linux%E4%B8%8A%E7%9A%84%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">Linux上的反向代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%90%AFwebdav"><span class="toc-text">开启webdav</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL%E7%9B%B8%E5%85%B3"><span class="toc-text">MySQL相关</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEMySQL"><span class="toc-text">配置MySQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BDmysql"><span class="toc-text">卸载mysql</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">重置数据库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81Web%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%AF%94%E8%BE%83"><span class="toc-text">常见Web服务器比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+<hr>
+<h3 id="Android下使用KSWeb"><a href="#Android下使用KSWeb" class="headerlink" title="Android下使用KSWeb"></a>Android下使用KSWeb</h3><p>网上随便找个3.986破解版就行，老版我遇到过很严重的bug。在root环境下只有Lighthttpd能使用80端口，Apache和Nginx不能使用80端口，具体是Apache使用80端口就无法启动，Nginx启动后所有界面403。<br>LinuxDeploy和Termux运行http服务器都不完美，介意MySQL的话不建议使用。</p>
+<hr>
+<h3 id="Windows下使用Phpstudy"><a href="#Windows下使用Phpstudy" class="headerlink" title="Windows下使用Phpstudy"></a>Windows下使用Phpstudy</h3><p>如果只是调试且需要配置MySQL，建议使用<a target="_blank" rel="noopener" href="https://www.xp.cn/">Phpstudy</a>，很方便，不仅带GUI界面，而且各个软件版本都可以随意更换<br>Phpstudy开机自启，管理员启动命令行，使用命令安装服务，并设置开启启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysqld install mysql</span><br><span class="line">httpd.exe -k install</span><br></pre></td></tr></table></figure>
+<p>Phpstudy的反向代理在<code>Apache2.4.39\conf\vhosts\0localhost_80.conf</code>文件中设置</p>
+<hr>
+<h3 id="php相关"><a href="#php相关" class="headerlink" title="php相关"></a>php相关</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>安装php7.4</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install php7.4 php7.4-fpm php7.4-mysql php7.4-curl php7.4-gd php7.4-mbstring php7.4-xml php7.4-xmlrpc php7.4-zip php7.4-opcache php7.4-bcmath php7.4-bz2 php7.4-odbc php7.4-gmp php7.4-imap php7.4-ldap php-json</span><br></pre></td></tr></table></figure>
+<p>安装php8.X</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apt install -y lsb-release ca-certificates apt-transport-https software-properties-common</span><br><span class="line">echo &quot;deb https://packages.sury.org/php/ $(lsb_release -sc) main&quot; | tee /etc/apt/sources.list.d/sury-php.list</span><br><span class="line">wget -qO - https://packages.sury.org/php/apt.gpg | apt-key add -</span><br><span class="line">apt update</span><br><span class="line">apt-get install php8.1 php8.1-fpm php8.1-mysql php8.1-curl php8.1-gd php8.1-mbstring php8.1-xml php8.1-xmlrpc php8.1-zip php8.1-opcache php8.1-bcmath php8.1-bz2 php8.1-odbc php8.1-gmp php8.1-imap php8.1-ldap php-json</span><br></pre></td></tr></table></figure>
+<p>安装composer</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget https://getcomposer.org/composer.phar</span><br><span class="line">mv composer.phar /usr/local/bin/composer</span><br><span class="line">composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/</span><br><span class="line">composer config -g -l repo.packagist</span><br></pre></td></tr></table></figure>
+<h4 id="测试php信息"><a href="#测试php信息" class="headerlink" title="测试php信息"></a>测试php信息</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="切换php版本"><a href="#切换php版本" class="headerlink" title="切换php版本"></a>切换php版本</h4><p>查询使用的php版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -lha /etc/alternatives | grep php</span><br></pre></td></tr></table></figure>
+<p>切换到7.4</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update-alternatives --set php /usr/bin/php7.4</span><br></pre></td></tr></table></figure>
+<p>卸载指定版本的php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get autoremove php8*</span><br></pre></td></tr></table></figure>
+<p>查找php配置文件位置，其实是不对的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -name php.ini</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -i |grep php\.ini</span><br></pre></td></tr></table></figure>
+<h4 id="composer安装"><a href="#composer安装" class="headerlink" title="composer安装"></a>composer安装</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">php -r &quot;copy(&#x27;https://install.phpcomposer.com/installer&#x27;, &#x27;composer-setup.php&#x27;);&quot;</span><br><span class="line">php composer-setup.php</span><br><span class="line">mv composer.phar /usr/local/bin/composer</span><br><span class="line">composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="php性能设置"><a href="#php性能设置" class="headerlink" title="php性能设置"></a>php性能设置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/php/7.4/fpm/php-fpm.conf</span><br><span class="line">nano /etc/php/7.4/fpm/php.ini</span><br></pre></td></tr></table></figure>
+<p>重启php生效</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service php7.4-fpm restart</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Nginx相关"><a href="#Nginx相关" class="headerlink" title="Nginx相关"></a>Nginx相关</h3><p>debian系安装：<code>apt-get install nginx</code></p>
+<h4 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+<p>将<code>user nginx</code>改为<code>user www-data</code><br>注释掉log，并修改<code>worker_processes 8;</code><br>重载配置文件<code>nginx -s reload</code><br>如果出现<code>nginx: configuration file /etc/nginx/nginx.conf test failed</code>，使用<code>nginx -t</code></p>
+<h4 id="配置php"><a href="#配置php" class="headerlink" title="配置php"></a>配置php</h4><p>打开站点文件<code>nano /etc/nginx/sites-available/default</code><br>在第五行Index后添加index.php，再添加默认php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location ~ \.php$ &#123;</span><br><span class="line">    include snippets/fastcgi-php.conf;   </span><br><span class="line">    fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于需要另一个版本php的目录，使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">location /inf/ &#123;</span><br><span class="line">       location ~ \.php$ &#123;</span><br><span class="line">               include snippets/fastcgi-php.conf;</span><br><span class="line">               fastcgi_pass unix:/run/php/php8.2-fpm.sock;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重载配置文件<code>nginx -s reload</code><br>重启服务器<code>systemctl restart nginx</code></p>
+<h4 id="添加访问密码"><a href="#添加访问密码" class="headerlink" title="添加访问密码"></a>添加访问密码</h4><p>安装插件<code>apt-get install apache2-utils</code><br>在<code>/etc/nginx</code>目录执行<code>htpasswd -bdc .htpasswd user password</code><br>打开站点文件<code>nano /etc/nginx/sites-available/default</code>，添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location /123456/ &#123;</span><br><span class="line">auth_basic &quot;Please input password&quot;;</span><br><span class="line">auth_basic_user_file /etc/nginx/.htpasswd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后打开浏览器访问，应该是需要输入密码了<br>如果登陆后某些资源401，请检查域是否相同，例如使用<code>192.168.1.X</code>登录后某些页面请求了<code>192.168.192.X</code></p>
+<h4 id="Nginx开启反向代理"><a href="#Nginx开启反向代理" class="headerlink" title="Nginx开启反向代理"></a>Nginx开启反向代理</h4><p>打开站点文件<code>nano /etc/nginx/sites-available/default</code>，添加<br>写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location /vs/ &#123;</span><br><span class="line">        proxy_pass   http://127.0.0.1:8886/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Apache相关"><a href="#Apache相关" class="headerlink" title="Apache相关"></a>Apache相关</h3><h4 id="1-安装带php的apache服务器"><a href="#1-安装带php的apache服务器" class="headerlink" title="1.安装带php的apache服务器"></a>1.安装带php的apache服务器</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apt-get install apache2 php libapache2-mod-php php-fpm</span><br><span class="line">apt-get install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-zip php-opcache php-bcmath php-bz2 php-odbc php-gmp php-imap</span><br><span class="line">a2enmod proxy_fcgi setenvif</span><br><span class="line">a2enconf php7.4-fpm</span><br><span class="line">systemctl reload apache2</span><br><span class="line">systemctl restart apache2</span><br></pre></td></tr></table></figure>
+<p>关闭日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/apache2/apache2.conf</span><br></pre></td></tr></table></figure>
+<p>注释掉<code>LogLevel warn</code>和<code>ErrorLog$&#123;APACHE_LOG_DIR&#125;/error.log</code></p>
+<h4 id="增加超时"><a href="#增加超时" class="headerlink" title="增加超时"></a>增加超时</h4><p><strong>特别是在wordpress要升级但是服务器又不是很给力的情况下</strong><br>替换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">KeepAliveTimeout 5000</span><br><span class="line">MaxKeepAliveRequests 10000</span><br><span class="line">Timeout 60000</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="Windows上的反向代理"><a href="#Windows上的反向代理" class="headerlink" title="Windows上的反向代理"></a>Windows上的反向代理</h4><p>打开&#x2F;conf&#x2F;httpd.conf，写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">LoadModule proxy_module modules/mod_proxy.so</span><br><span class="line">LoadModule proxy_ajp_module modules/mod_proxy_ajp.so</span><br><span class="line">LoadModule proxy_http_module modules/mod_proxy_http.so</span><br><span class="line">LoadModule vhost_alias_module modules/mod_vhost_alias.so</span><br><span class="line">LoadModule proxy_connect_module modules/mod_proxy_connect.so </span><br><span class="line">LoadModule access_compat_module modules/mod_access_compat.so</span><br><span class="line"></span><br><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">	ProxyRequests Off</span><br><span class="line">	ProxyPass /sy/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPassReverse /sy/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPass /vs/ http://127.0.0.1:8886/</span><br><span class="line">	ProxyPassReverse /vs/ http://127.0.0.1:8886/</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Linux上的反向代理"><a href="#Linux上的反向代理" class="headerlink" title="Linux上的反向代理"></a>Linux上的反向代理</h4><p>开启模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a2enmod proxy</span><br><span class="line">a2enmod proxy_ajp</span><br><span class="line">a2enmod proxy_http</span><br><span class="line">a2enmod vhost_alias</span><br><span class="line">a2enmod proxy_connect</span><br><span class="line">a2enmod access_compat</span><br></pre></td></tr></table></figure>
+<p>修改配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/apache2/apache2.conf</span><br></pre></td></tr></table></figure>
+<p>写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">	ProxyRequests Off</span><br><span class="line">	ProxyPass /sy/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPassReverse /sy/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPass /vs/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPassReverse /vs/ http://127.0.0.1:8384/</span><br><span class="line">	ProxyPass /wf/ http://127.0.0.1:2333/</span><br><span class="line">	ProxyPassReverse /wf/ http://127.0.0.1:2333/</span><br><span class="line">	ProxyPass /sd/ http://127.0.0.1:2334/ timeout=60000</span><br><span class="line">	ProxyPassReverse /sd/ http://127.0.0.1:2334/ timeout=60000</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>注：对于事件超过2分钟的应用，需设置timeout<br>对于https</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:443&gt;</span><br><span class="line">	ProxyRequests Off</span><br><span class="line">	ProxyPass /wm/ https://127.0.0.1:10000/</span><br><span class="line">	ProxyPassReverse /wm/ https://127.0.0.1:10000/</span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>未通过测试，可能是没配置SSL<br>重启服务器生效</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart apache2</span><br></pre></td></tr></table></figure>
+<h4 id="开启webdav"><a href="#开启webdav" class="headerlink" title="开启webdav"></a>开启webdav</h4><p>启用模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a2enmod dav_fs</span><br><span class="line">a2enmod dav</span><br></pre></td></tr></table></figure>
+<p>添加端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/apache2/ports.conf</span><br></pre></td></tr></table></figure>
+<p>添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Listen 88</span><br></pre></td></tr></table></figure>
+<p>配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/apache2/sites-available/webdav.conf</span><br></pre></td></tr></table></figure>
+<p>添加主机，这个要放在配置文件最后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">DavLockDB /var/www/webdav/DavLock</span><br><span class="line">  &lt;VirtualHost *:88&gt;</span><br><span class="line">      ServerAdmin root@localhost</span><br><span class="line">      DocumentRoot /var/www/webdav/sean/</span><br><span class="line">      Alias /webdav /var/www/webdav/sean/</span><br><span class="line">      &lt;Directory &quot;/var/www/webdav&quot;&gt;</span><br><span class="line">         DAV On</span><br><span class="line">         Options Indexes MultiViews</span><br><span class="line">         AllowOverride None</span><br><span class="line">         Order allow,deny</span><br><span class="line">         allow from all</span><br><span class="line">         AuthType Basic</span><br><span class="line">         AuthName &quot;sean&quot;</span><br><span class="line">         AuthUserFile /var/www/webdav/passwd.dav</span><br><span class="line">         Require valid-user </span><br><span class="line">      &lt;/Directory&gt;</span><br><span class="line"> &lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+<p>激活</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /etc/apache2/sites-available/webdav.conf /etc/apache2/conf-enabled/webdav.conf</span><br></pre></td></tr></table></figure>
+<p>给权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown -R www-data /var/www/webdav/sean/</span><br><span class="line">torch /var/www/webdav/DavLock</span><br><span class="line">chown -R www-data  /var/www/webdav/DavLock</span><br></pre></td></tr></table></figure>
+<p>创建密钥文件，最后关键字为登陆用户名。输入后要求输入两遍密码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">htpasswd -c /var/www/webdav/passwd.dav sean</span><br></pre></td></tr></table></figure>
+<p>使用链接<a target="_blank" rel="noopener" href="http://192.168.192.200:88/webdav/">http://192.168.192.200:88/webdav/</a> 进行访问</p>
+<hr>
+<h3 id="MySQL相关"><a href="#MySQL相关" class="headerlink" title="MySQL相关"></a>MySQL相关</h3><h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt-get install mariadb-server mariadb-client php-mysql</span><br><span class="line">service apache2 restart</span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+<h4 id="配置MySQL"><a href="#配置MySQL" class="headerlink" title="配置MySQL"></a>配置MySQL</h4><p>登录数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p	//直接回车就行，没密码</span><br></pre></td></tr></table></figure>
+<p>建立一个名为wordpress的数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE wordpress;</span><br><span class="line">CREATE DATABASE pichome;</span><br></pre></td></tr></table></figure>
+<p>查看数据库是否创建成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW DATABASES;</span><br></pre></td></tr></table></figure>
+<p>删除数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP DATABASE datebase;</span><br></pre></td></tr></table></figure>
+<p>切换为mysql</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use mysql</span><br></pre></td></tr></table></figure>
+<p>查看用户和权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT User, Password, Host FROM user;</span><br></pre></td></tr></table></figure>
+<p>授予远程主机访问数据库权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL PRIVILEGES ON *.* TO &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;你的密码&#x27; WITH GRANT OPTION;</span><br></pre></td></tr></table></figure>
+<p>如果要删除用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from user where user=&#x27;root&#x27; and host=&#x27;0.0.0.0&#x27;;</span><br></pre></td></tr></table></figure>
+<p>刷新用户和权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+<h4 id="卸载mysql"><a href="#卸载mysql" class="headerlink" title="卸载mysql"></a>卸载mysql</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aptitude purge mariadb-server</span><br><span class="line">rm -rf /var/lib/mysql</span><br></pre></td></tr></table></figure>
+<h4 id="重置数据库"><a href="#重置数据库" class="headerlink" title="重置数据库"></a>重置数据库</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">service mysql stop</span><br><span class="line">rm -rf /var/lib/mysql</span><br><span class="line">mysql_install_db</span><br><span class="line">service mysql start</span><br><span class="line">mysqladmin -uroot -p password</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="常见Web服务器比较"><a href="#常见Web服务器比较" class="headerlink" title="常见Web服务器比较"></a>常见Web服务器比较</h3><div style="overflow-x:auto;white-space:nowrap;">
+<table style="text-align:center;">
+<thead>
+  <tr>
+    <th>Server</th>
+    <th>Apache</th>
+    <th>Nginx</th>
+    <th>Lighttpd</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Proxy代理</td>
+    <td>非常好</td>
+    <td>非常好</td>
+    <td>一般</td>
+  </tr>
+  <tr>
+    <td>Rewriter</td>
+    <td>好</td>
+    <td>非常好</td>
+    <td>一般</td>
+  </tr>
+  <tr>
+    <td>Fcgi</td>
+    <td>不好</td>
+    <td>好</td>
+    <td>非常好</td>
+  </tr>
+  <tr>
+    <td>热部署</td>
+    <td>不支持</td>
+    <td>支持</td>
+    <td>不支持</td>
+  </tr>
+  <tr>
+    <td>系统压力比较</td>
+    <td>很大</td>
+    <td>很小</td>
+    <td>比较小</td>
+  </tr>
+  <tr>
+    <td>稳定性</td>
+    <td>好</td>
+    <td>非常好</td>
+    <td>不好</td>
+  </tr>
+  <tr>
+    <td>安全性</td>
+    <td>好</td>
+    <td>一般</td>
+    <td>一般</td>
+  </tr>
+  <tr>
+    <td>技术支持</td>
+    <td>非常好</td>
+    <td>很少</td>
+    <td>一般</td>
+  </tr>
+  <tr>
+    <td>静态文件处理</td>
+    <td>一般</td>
+    <td>非常好</td>
+    <td>好</td>
+  </tr>
+  <tr>
+    <td>Vhosts虚拟主机</td>
+    <td>支持</td>
+    <td>不支持</td>
+    <td>支持</td>
+  </tr>
+  <tr>
+    <td>反向代理</td>
+    <td>一股</td>
+    <td>非常好</td>
+    <td>一般</td>
+  </tr>
+  <tr>
+    <td>Session sticky</td>
+    <td>支持</td>
+    <td>不支持</td>
+    <td>支持</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<hr>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Moxi099/article/details/123399422">Apache+php环境配置</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38250687/article/details/112778106">搭建网站之二——Windows环境安装PHP开发环境</a><br><a target="_blank" rel="noopener" href="https://pangruitao.com/post/2130">Debian下用Apache2搭建WebDAV</a><br><a target="_blank" rel="noopener" href="http://www.kalet.cn/post/819.html">树莓派下Apache2配置WebDav</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Server/" rel="tag">Server</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2006/"
+                    data-tooltip="搭建Minecraft服务器"
+                    aria-label="上一篇: 搭建Minecraft服务器"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/1003/"
+                    data-tooltip="快来搭建自己的个人网站吧"
+                    aria-label="下一篇: 快来搭建自己的个人网站吧"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2006/"
+                    data-tooltip="搭建Minecraft服务器"
+                    aria-label="上一篇: 搭建Minecraft服务器"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/1003/"
+                    data-tooltip="快来搭建自己的个人网站吧"
+                    aria-label="下一篇: 快来搭建自己的个人网站吧"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

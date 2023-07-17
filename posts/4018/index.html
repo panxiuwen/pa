@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Pan&#39;s websit">
+    <title>UnixBench的使用 - Pan&#39;s websit</title>
+    <meta name="author" content="Sean Pan">
+    
+        <meta name="keywords" content="hexo,javascript">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg"},"articleBody":"UnixBench是一款开源跨平台的测试Unix系统基本性能的工具，本文介绍了它的编译和使用\n\n\n\n\nLinux下安装与使用1.获取UnixBench2.Linux安装依赖\n1apt-get install perl gcc make unzip\n3.上传后解压，记着千万别在windows下解压后再上传\n1unzip byte-unixbench-master.zip\n4.cd 到 UnixBench目录\n1./Run\nMac下使用1.下载并安装Xcode，11.3.1是Mojave最后能用的版本解压，把时间调到2020年1月后，如果提示归档不是来自Apple，使用xattr命令移除校验\n1xattr -d com.apple.quarantine Xcode_11.3.1.xip\n如果双击后生成了.xip.gz文件，说明压缩文件已损坏，请校验md5码2.下载Command Line Tools for Xcode并安装3.安装gcc笔者尝试用xcode自带的clang编译unixbench，发现编译失败，所以安装Homebrew\n1/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;\n由于直接使用brew install gcc会下载最新的gcc并编译，然而我的版本是mojave，运行命令后大概2小时后直接报错，缺少XXX.h。由于我对macOS缺少xxx文件并不熟悉，百度也完全没有，毕竟mac搞开发资料真的好少，所以先找一下有啥直接能用不用编译的包\n1brew search gcc\n我的可用的版本是gcc567，我用了gcc6\n1brew install gcc-6\n测试一下\n1gcc-6 -v\n然后修改Run文件里的，改成gcc-6\n1my $cCompiler = &#x27;gcc&#x27;;\n还有Makefile里的，也改成gcc-6\n1CC=gcc\n就可以愉快的跑分了，除了Dhrystone和Whetstone的跑分，其他都比原生Linux低不少，情况和Windows下的虚拟机差不多，不知道为什么。虽然黑苹果给我的体验比装win要好一丢丢。\n\nOpenWRT下使用1.交叉编译\n1make CC=mipsel-openwrt-linux-musl-gcc LD=mipsel-openwrt-linux-musl-ld\n2.安装依赖\n1opkg install perlbase-posix perl perlbase-time perlbase-io perlbase-findbin coreutils-od\n3.修改Run\n注释掉 use strict 和两处尝试执行 make all 的语句\n测试项目说明1.Dhrystone测试测试聚焦在字符串处理，没有浮点运算操作。这个测试用于测试链接器编译、代码优化、内存缓存、等待状态、整数数据类型等，硬件和软件设计都会非常大的影响测试结果。\n2.Whetstone 测试这项测试项目用于测试浮点运算效率和速度。这项测试项目包含若干个科学计算的典型性能模块，包含大量的C语言函数,sin cos sqrt exp和日志以及使用整数和浮点的数学操作。包含数组访问、条件分支和过程调用。\n3.Execl Throughput（execl 吞吐，这里的execl是类unix系统非常重要的函数，非办公软件的execl）测试这项测试测试每秒execl函数调用次数。execl是 exec函数家族的一部分，使用新的图形处理代替当前的图形处理。有许多命令和前端的execve()函数命令非常相似。\n4.File Copy测试这项测试衡量文件数据从一个文件被传输到另外一个，使用大量的缓存。包括文件的读、写、复制测试，测试指标是一定时间内（默认是10秒）被重写、读、复制的字符数量。\n5.Pipe Throughput（管道吞吐）测试pipe是简单的进程之间的通讯。管道吞吐测试是测试在一秒钟一个进程写512比特到一个管道中并且读回来的次数。管道吞吐测试和实际编程有差距。\n6.Pipe-based Context Switching （基于管道的上下文交互）测试这项测试衡量两个进程通过管道交换和整数倍的增加吞吐的次数。基于管道的上下文切换和真实程序很类似。测试程序产生一个双向管道通讯的子线程。\n7.Process Creation(进程创建)测试这项测试衡量一个进程能产生子线程并且立即退出的次数。新进程真的创建进程阻塞和内存占用，所以测试程序直接使用内存带宽。这项测试用于典型的比较大量的操作系统进程创建操作。\n8.Shell Scripts测试shell脚本测试用于衡量在一分钟内，一个进程可以启动并停止shell脚本的次数，通常会测试1，2， 3， 4， 8 个shell脚本的共同拷贝，shell脚本是一套转化数据文件的脚本。\n9.System Call Overhead （系统调用消耗）测试这项测试衡量进入和离开系统内核的消耗，例如，系统调用的消耗。程序简单重复的执行getpid调用（返回调用的进程id）。消耗的指标是调用进入和离开内核的执行时间。\n其他说明1.关于测试时间根据说明文档\n\nsystem测试一般耗费29分钟，graphics测试耗费18分钟实际上笔者在跑的时候单核测试和多核测试都会花费29分钟，也就是共58分钟。\n\n2.Windows使用笔者在Windows上尝试用mingw编译过UnixBench，但是并没有成功，卡在判断OS类型上了，毕竟Windows并不是Unix，而且就算编译成功了也会因为Windows没有Unix的一些指令导致无法运行。\n参考在OpenWrt路由器上用UnixBench基准测试 CPU跑分UnixBench仓库\n","dateCreated":"2020-08-04T00:00:00+08:00","dateModified":"2023-07-03T16:41:40+08:00","datePublished":"2020-08-04T00:00:00+08:00","description":"UnixBench是一款开源跨平台的测试Unix系统基本性能的工具，本文介绍了它的编译和使用","headline":"UnixBench的使用","image":["../10000/UnixBench.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://panxiuwen.github.io/pa/posts/4018/"},"publisher":{"@type":"Organization","name":"Sean Pan","sameAs":["https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe","https://music.163.com/#/user/home?id=70816221","https://github.com/panxiuwen/","https://gitee.com/sean982202733/","mailto:panxiuwen_sean@qq.com"],"image":"mitu.jpg","logo":{"@type":"ImageObject","url":"mitu.jpg"}},"url":"https://panxiuwen.github.io/pa/posts/4018/","keywords":"Performance","thumbnailUrl":"../10000/UnixBench.jpg"}</script>
+    <meta name="description" content="UnixBench是一款开源跨平台的测试Unix系统基本性能的工具，本文介绍了它的编译和使用">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="UnixBench的使用">
+<meta property="og:url" content="https://panxiuwen.github.io/pa/posts/4018/index.html">
+<meta property="og:site_name" content="Pan&#39;s websit">
+<meta property="og:description" content="UnixBench是一款开源跨平台的测试Unix系统基本性能的工具，本文介绍了它的编译和使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-03T08:41:40.000Z">
+<meta property="article:author" content="Sean Pan">
+<meta property="article:tag" content="Performance">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@982202733">
+<meta property="fb:app_id" content="[object Object]">
+    
+        <link rel="publisher" href="https://plus.google.com/982202733"/>
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/assets/images/mitu.jpg"/>
+    
+    
+        <meta property="og:image" content="https://panxiuwen.github.io/pa/posts/4018/../10000/UnixBench.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://panxiuwen.github.io/pa/posts/4018/../10000/UnixBench.jpg"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/pa/assets/css/style-i9xrsmsdhu6y40y90anxg1hlmj1ygq01iq4idkymswvzsi6flopl4majie56.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/pa/"
+            aria-label=""
+        >
+            Pan&#39;s websit
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="打开链接: /pa/#about"
+            >
+        
+        
+            <img class="header-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/pa/#about"
+                    aria-label="阅读有关作者的更多信息"
+                >
+                    <img class="sidebar-profile-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sean Pan</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>不似天涯，卷起杨花似雪花</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/"
+                            
+                            rel="noopener"
+                            title="首页"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">首页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-categories"
+                            
+                            rel="noopener"
+                            title="分类"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-tags"
+                            
+                            rel="noopener"
+                            title="标签"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/pa/all-archives"
+                            
+                            rel="noopener"
+                            title="归档"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">归档</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="关于"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.zhihu.com/people/gu-ao-de-zhan-dou-zhe"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="知乎"
+                        >
+                        <i class="sidebar-button-icon fab fa-zhihu" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">知乎</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://music.163.com/#/user/home?id=70816221"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="网易云"
+                        >
+                        <i class="sidebar-button-icon fab fa-tiktok" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">网易云</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/panxiuwen/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://gitee.com/sean982202733/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Gitee"
+                        >
+                        <i class="sidebar-button-icon fab fa-google" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Gitee</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="mailto:panxiuwen_sean@qq.com"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="邮箱"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            UnixBench的使用
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-08-04T00:00:00+08:00">
+	
+		    2020年 8月 04日
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/pa/categories/Linux/">Linux</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>UnixBench是一款开源跨平台的测试Unix系统基本性能的工具，本文介绍了它的编译和使用</p>
+<span id="more"></span>
+<hr>
+<h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E4%B8%8B%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="toc-text">Linux下安装与使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mac%E4%B8%8B%E4%BD%BF%E7%94%A8"><span class="toc-text">Mac下使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenWRT%E4%B8%8B%E4%BD%BF%E7%94%A8"><span class="toc-text">OpenWRT下使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%A1%B9%E7%9B%AE%E8%AF%B4%E6%98%8E"><span class="toc-text">测试项目说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%AF%B4%E6%98%8E"><span class="toc-text">其他说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol>
+<hr>
+<h3 id="Linux下安装与使用"><a href="#Linux下安装与使用" class="headerlink" title="Linux下安装与使用"></a>Linux下安装与使用</h3><p>1.<a target="_blank" rel="noopener" href="https://github.com/kdlucas/byte-unixbench">获取UnixBench</a><br>2.Linux安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install perl gcc make unzip</span><br></pre></td></tr></table></figure>
+<p>3.上传后解压，记着千万别在windows下解压后再上传</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip byte-unixbench-master.zip</span><br></pre></td></tr></table></figure>
+<p>4.cd 到 UnixBench目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./Run</span><br></pre></td></tr></table></figure>
+<h3 id="Mac下使用"><a href="#Mac下使用" class="headerlink" title="Mac下使用"></a>Mac下使用</h3><p>1.下载并安装<a target="_blank" rel="noopener" href="https://developer.apple.com/download/all/?q=xcode">Xcode</a>，11.3.1是Mojave最后能用的版本<br>解压，把时间调到2020年1月后，如果提示归档不是来自Apple，使用xattr命令移除校验</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xattr -d com.apple.quarantine Xcode_11.3.1.xip</span><br></pre></td></tr></table></figure>
+<p><strong>如果双击后生成了.xip.gz文件，说明压缩文件已损坏，请校验md5码</strong><br>2.下载Command Line Tools for Xcode并安装<br>3.安装gcc<br>笔者尝试用xcode自带的clang编译unixbench，发现编译失败，所以安装Homebrew</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+<p>由于直接使用brew install gcc会下载最新的gcc并编译，然而我的版本是mojave，运行命令后大概2小时后直接报错，缺少XXX.h。由于我对macOS缺少xxx文件并不熟悉，百度也完全没有，毕竟mac搞开发资料真的好少，所以先找一下有啥直接能用不用编译的包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew search gcc</span><br></pre></td></tr></table></figure>
+<p>我的可用的版本是gcc567，我用了gcc6</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install gcc-6</span><br></pre></td></tr></table></figure>
+<p>测试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc-6 -v</span><br></pre></td></tr></table></figure>
+<p>然后修改Run文件里的，改成gcc-6</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my $cCompiler = &#x27;gcc&#x27;;</span><br></pre></td></tr></table></figure>
+<p>还有Makefile里的，也改成gcc-6</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CC=gcc</span><br></pre></td></tr></table></figure>
+<p>就可以愉快的跑分了，除了Dhrystone和Whetstone的跑分，其他都比原生Linux低不少，情况和Windows下的虚拟机差不多，不知道为什么。虽然黑苹果给我的体验比装win要好一丢丢。</p>
+<hr>
+<h3 id="OpenWRT下使用"><a href="#OpenWRT下使用" class="headerlink" title="OpenWRT下使用"></a>OpenWRT下使用</h3><p>1.交叉编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CC=mipsel-openwrt-linux-musl-gcc LD=mipsel-openwrt-linux-musl-ld</span><br></pre></td></tr></table></figure>
+<p>2.安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opkg install perlbase-posix perl perlbase-time perlbase-io perlbase-findbin coreutils-od</span><br></pre></td></tr></table></figure>
+<p>3.修改Run</p>
+<p>注释掉 use strict 和两处尝试执行 make all 的语句</p>
+<h3 id="测试项目说明"><a href="#测试项目说明" class="headerlink" title="测试项目说明"></a>测试项目说明</h3><p>1.Dhrystone测试<br>测试聚焦在字符串处理，没有浮点运算操作。这个测试用于测试链接器编译、代码优化、内存缓存、等待状态、整数数据类型等，硬件和软件设计都会非常大的影响测试结果。</p>
+<p>2.Whetstone 测试<br>这项测试项目用于测试浮点运算效率和速度。这项测试项目包含若干个科学计算的典型性能模块，包含大量的C语言函数,sin cos sqrt exp和日志以及使用整数和浮点的数学操作。包含数组访问、条件分支和过程调用。</p>
+<p>3.Execl Throughput（execl 吞吐，这里的execl是类unix系统非常重要的函数，非办公软件的execl）测试<br>这项测试测试每秒execl函数调用次数。execl是 exec函数家族的一部分，使用新的图形处理代替当前的图形处理。有许多命令和前端的execve()函数命令非常相似。</p>
+<p>4.File Copy测试<br>这项测试衡量文件数据从一个文件被传输到另外一个，使用大量的缓存。包括文件的读、写、复制测试，测试指标是一定时间内（默认是10秒）被重写、读、复制的字符数量。</p>
+<p>5.Pipe Throughput（管道吞吐）测试<br>pipe是简单的进程之间的通讯。管道吞吐测试是测试在一秒钟一个进程写512比特到一个管道中并且读回来的次数。管道吞吐测试和实际编程有差距。</p>
+<p>6.Pipe-based Context Switching （基于管道的上下文交互）测试<br>这项测试衡量两个进程通过管道交换和整数倍的增加吞吐的次数。基于管道的上下文切换和真实程序很类似。测试程序产生一个双向管道通讯的子线程。</p>
+<p>7.Process Creation(进程创建)测试<br>这项测试衡量一个进程能产生子线程并且立即退出的次数。新进程真的创建进程阻塞和内存占用，所以测试程序直接使用内存带宽。这项测试用于典型的比较大量的操作系统进程创建操作。</p>
+<p>8.Shell Scripts测试<br>shell脚本测试用于衡量在一分钟内，一个进程可以启动并停止shell脚本的次数，通常会测试1，2， 3， 4， 8 个shell脚本的共同拷贝，shell脚本是一套转化数据文件的脚本。</p>
+<p>9.System Call Overhead （系统调用消耗）测试<br>这项测试衡量进入和离开系统内核的消耗，例如，系统调用的消耗。程序简单重复的执行getpid调用（返回调用的进程id）。消耗的指标是调用进入和离开内核的执行时间。</p>
+<h3 id="其他说明"><a href="#其他说明" class="headerlink" title="其他说明"></a>其他说明</h3><p>1.关于测试时间<br>根据说明文档</p>
+<blockquote>
+<p>system测试一般耗费29分钟，graphics测试耗费18分钟<br>实际上笔者在跑的时候单核测试和多核测试都会花费29分钟，也就是共58分钟。</p>
+</blockquote>
+<p>2.Windows使用<br>笔者在Windows上尝试用mingw编译过UnixBench，但是并没有成功，卡在判断OS类型上了，毕竟Windows并不是Unix，而且就算编译成功了也会因为Windows没有Unix的一些指令导致无法运行。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.anywlan.com/article-4774-1.html?_dsign=e442bbbb">在OpenWrt路由器上用UnixBench基准测试 CPU跑分</a><br><a target="_blank" rel="noopener" href="https://github.com/kdlucas/byte-unixbench">UnixBench仓库</a></p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/pa/tags/Performance/" rel="tag">Performance</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2004/"
+                    data-tooltip="一些设备的跑分"
+                    aria-label="上一篇: 一些设备的跑分"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4021/"
+                    data-tooltip="在Android设备上使用Linux"
+                    aria-label="下一篇: 在Android设备上使用Linux"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 Sean Pan. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/2004/"
+                    data-tooltip="一些设备的跑分"
+                    aria-label="上一篇: 一些设备的跑分"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/pa/posts/4021/"
+                    data-tooltip="在Android设备上使用Linux"
+                    aria-label="下一篇: 在Android设备上使用Linux"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Diesen Beitrag teilen"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="目录">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/pa/assets/images/mitu.jpg" alt="作者的图片"/>
+        
+            <h4 id="about-card-name">Sean Pan</h4>
+        
+            <div id="about-card-bio"><p>不似天涯，卷起杨花似雪花</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Master in YNU</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Kunming China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/pa/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/pa/assets/js/script-y2tdroxnsypccc1bsimjahafkckbzxngkr8dssdy6nartjludpjiwyoci5jv.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>
