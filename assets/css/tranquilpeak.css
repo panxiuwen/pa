@@ -13,7 +13,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: white;
+  background: #ffffff61;
   font-family: "Open Sans", sans-serif;
   font-size: 1.6rem;
   line-height: 1.9em;
@@ -93,7 +93,7 @@ table {
   table td {
     padding: 5px 10px; }
   table tr:nth-child(2n) {
-    background: #f7f8f8; }
+    background: transparent; }
 
 hr {
   margin: 1.5em 0 0;
@@ -125,15 +125,15 @@ code {
   display: inline-block;
   font-family: Menlo, Consolas, monospace;
   font-weight: 400;
-  background-color: #f7f8f8;
+  background-color: #f7f8f861;
   padding: 0 10px; }
 
 acronym,
 abbr {
-  border-bottom: 1px dotted #5d686f; }
+  border-bottom: 1px dotted #2b2f31; }
 
 blockquote {
-  border-left: 3px solid #5d686f;
+  border-left: 3px solid #2b2f31;
   padding: 0 15px;
   font-style: italic;
   margin: 1.5em 0 0; }
@@ -197,6 +197,8 @@ blockquote {
     border-radius: 3px;
     padding: 30px 0;
     cursor: initial;
+    backdrop-filter: blur(10px);
+    background: #ffffff61;
     -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); }
@@ -204,10 +206,10 @@ blockquote {
       position: absolute;
       top: 15px;
       right: 15px;
-      color: #9eabb3;
+      color: #5d686f;
       cursor: pointer; }
       #about #about-card #about-btn-close:hover {
-        color: #738691; }
+        color: #3a4145; }
     #about #about-card #about-card-picture {
       margin-bottom: 15px; }
     #about #about-card #about-card-name {
@@ -226,7 +228,7 @@ blockquote {
       font-size: 1.6rem;
       line-height: 1.9em;
       font-weight: 400;
-      color: #5d686f; }
+      color: #2b2f31; }
 
 @media only screen and (max-width: 767px) {
   #about #about-card {
@@ -400,7 +402,7 @@ blockquote {
   z-index: -1; }
 
 #footer {
-  color: #9eabb3;
+  color: #5d686f;
   font-size: 1.5rem;
   text-align: center;
   margin-top: 70px;
@@ -411,7 +413,7 @@ blockquote {
   display: block;
   width: 100%;
   height: 55px;
-  background: #fff;
+  background: transparent;
   position: fixed;
   top: 0;
   border: 1px solid #eef2f8;
@@ -420,7 +422,9 @@ blockquote {
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out;
   -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000; }
+  -webkit-perspective: 1000;
+  backdrop-filter: blur(10px);
+  background: #ffffff61; }
   #header #btn-open-sidebar {
     position: absolute;
     top: 20px;
@@ -489,7 +493,7 @@ blockquote {
 #main {
   display: block;
   min-height: 100%;
-  background: #fff;
+  background: transparent;
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out; }
   #main.hasCover.hasCoverCaption, #main.hasCover.hasCoverMetaOut {
@@ -608,11 +612,13 @@ blockquote {
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased; }
+  font-smoothing: antialiased;
+  backdrop-filter: blur(10px);
+  background: #ffffff61; }
   #sidebar .sidebar-container {
     overflow: auto; }
   #sidebar .sidebar-profile {
-    color: #ebebeb;
+    color: #2b2f31;
     text-align: center;
     padding-top: 18px;
     margin-bottom: 15px; }
@@ -621,7 +627,7 @@ blockquote {
       margin: 0 auto; }
     #sidebar .sidebar-profile .sidebar-profile-name {
       font-size: 1.1em;
-      color: #ebebeb; }
+      color: #2b2f31; }
   #sidebar ul.sidebar-buttons {
     padding: 0;
     margin: 0 0 20px 0; }
@@ -631,12 +637,12 @@ blockquote {
       height: 45px;
       line-height: 45px; }
       #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link {
-        color: #ebebeb;
+        color: #2b2f31;
         display: block;
         height: 100%; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover, #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
-          color: white; }
+          color: #7f8a8f; }
     #sidebar ul.sidebar-buttons:first-child {
       margin-top: 5px; }
 
@@ -996,7 +1002,7 @@ blockquote {
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.6rem;
-        color: #ebebeb; }
+        color: #2b2f31; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -1139,7 +1145,7 @@ blockquote {
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.6rem;
-        color: #ebebeb; }
+        color: #2b2f31; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -1321,7 +1327,7 @@ blockquote {
   display: none; }
 
 .archive .archive-title {
-  color: #5d686f; }
+  color: #2b2f31; }
   .archive .archive-title:hover {
     text-decoration: underline; }
 
@@ -1329,11 +1335,11 @@ blockquote {
   list-style: none; }
   .archive .archive-posts .archive-post .archive-post-title {
     margin-left: 10px;
-    color: #5d686f; }
+    color: #2b2f31; }
     .archive .archive-posts .archive-post .archive-post-title:hover {
       text-decoration: underline; }
   .archive .archive-posts .archive-post .archive-post-date {
-    color: #9eabb3; }
+    color: #5d686f; }
   .archive .archive-posts .archive-post::before {
     font-family: 'Font Awesome 5 Free';
     font-weight: 600;
@@ -1357,23 +1363,24 @@ blockquote {
   margin: 0;
   letter-spacing: 0.01em;
   font-size: 1.6rem;
-  cursor: pointer; }
+  cursor: pointer;
+  background: #ffffff61; }
   .btn:hover, .btn:focus, .btn:active {
     text-decoration: none; }
 
 .btn--disabled,
 .btn--disabled:hover {
-  color: #bbc4c9 !important;
-  border: 1px solid #bbc4c9;
+  color: #74828b !important;
+  border: 1px solid #74828b;
   cursor: not-allowed;
   text-decoration: none; }
 
 .btn--default {
-  color: #9eabb3 !important;
-  border: 1px solid #9eabb3; }
+  color: #5d686f !important;
+  border: 1px solid #5d686f; }
   .btn--default:hover {
-    color: #738691 !important;
-    border: 1px solid #738691; }
+    color: #3a4145 !important;
+    border: 1px solid #3a4145; }
 
 .btn--success {
   color: #4dc657 !important;
@@ -1408,7 +1415,7 @@ blockquote {
   display: block;
   font-family: "Merriweather", serif;
   font-size: 1.3rem;
-  color: #81929d;
+  color: #464e53;
   text-align: center;
   font-style: italic;
   padding-right: 10px;
@@ -1574,7 +1581,7 @@ figure.highlight,
   width: 100%;
   border: none;
   outline: none;
-  color: #5d686f;
+  color: #2b2f31;
   font-weight: 300; }
   .form-control:hover, .form-control:focus {
     outline: none; }
@@ -1711,6 +1718,15 @@ a.fancybox {
   max-width: 750px;
   margin: 0 auto;
   padding-right: 20px;
+  padding-left: 20px;
+  backdrop-filter: blur(10px);
+  background: #ffffff61; }
+
+.main-content-wrap-index {
+  display: block;
+  max-width: 750px;
+  margin: 0 auto;
+  padding-right: 20px;
   padding-left: 20px; }
 
 @media only screen and (min-width: 1024px) {
@@ -1770,10 +1786,10 @@ a.fancybox {
   margin: 0 0 -5px; }
 
 .media-meta {
-  color: #9eabb3; }
+  color: #5d686f; }
 
 .media-content {
-  color: #5d686f; }
+  color: #2b2f31; }
 
 .modal-container {
   position: fixed;
@@ -1812,7 +1828,7 @@ a.fancybox {
     position: absolute;
     top: 9px;
     right: 15px;
-    color: #5d686f;
+    color: #2b2f31;
     cursor: pointer; }
 
 .overlay {
@@ -1853,7 +1869,7 @@ a.fancybox {
     .pagination-bar .pagination .pagination-number {
       float: right;
       font-size: 1.3rem;
-      color: #9eabb3; }
+      color: #5d686f; }
 
 .post {
   position: relative;
@@ -1871,14 +1887,14 @@ a.fancybox {
     font-family: "Open Sans", sans-serif;
     font-size: 1.3rem;
     font-weight: 400;
-    color: #9eabb3; }
+    color: #5d686f; }
     .post .post-meta a {
-      color: #9eabb3; }
+      color: #5d686f; }
   .post .post-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
     font-family: "Merriweather", serif;
-    color: #5d686f;
+    color: #2b2f31;
     margin-top: 20px;
     font-weight: 400;
     overflow: hidden;
@@ -1970,7 +1986,7 @@ a.fancybox {
     float: right;
     margin: 1.5em 0 1.5em 35px; }
   .pullquote.blur {
-    background-color: #eef0f1; }
+    background-color: #b3b9bc; }
 
 .post-header .post-title {
   margin: 0;
@@ -2128,8 +2144,11 @@ a.fancybox {
       transform: translate3d(75px, 0, 0); } }
 
 .postShorten-group .postShorten {
-  margin-top: 15px;
-  border-bottom: 1px solid #eef2f8; }
+  margin: 10px auto;
+  padding: 10px 10px 10px 10px;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  background: #ffffff61; }
 
 .postShorten {
   position: relative;
@@ -2147,10 +2166,10 @@ a.fancybox {
   .postShorten .postShorten-meta {
     line-height: 1.5em; }
     .postShorten .postShorten-meta a {
-      color: #9eabb3; }
+      color: #5d686f; }
   .postShorten .postShorten-meta,
   .postShorten .postShorten-readingtime {
-    color: #9eabb3; }
+    color: #5d686f; }
   .postShorten .postShorten-excerpt_link {
     margin-top: -15px; }
   .postShorten .postShorten-meta,
@@ -2164,7 +2183,7 @@ a.fancybox {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
     font-family: "Merriweather", serif;
-    color: #5d686f;
+    color: #2b2f31;
     font-weight: 400;
     overflow: hidden;
     -webkit-hypens: auto;
@@ -2274,7 +2293,7 @@ a.fancybox {
   top: 15px;
   right: 15px;
   font-size: 20px;
-  color: #5d686f;
+  color: #2b2f31;
   cursor: pointer; }
 
 @media only screen and (max-width: 767px) {
@@ -2305,7 +2324,7 @@ a.fancybox {
 a.tag,
 .tag {
   display: inline-block;
-  background: #fff;
+  background: transparent;
   width: auto;
   height: auto;
   border-radius: 3px;
@@ -2317,12 +2336,12 @@ a.tag,
 
 a.tag--default,
 .tag--default {
-  color: #9eabb3 !important;
-  border: 1px solid #9eabb3; }
+  color: #5d686f !important;
+  border: 1px solid #5d686f; }
   a.tag--default:hover,
   .tag--default:hover {
-    color: #738691 !important;
-    border: 1px solid #738691;
+    color: #3a4145 !important;
+    border: 1px solid #3a4145;
     text-decoration: none; }
 
 a.tag--success,
@@ -2426,10 +2445,10 @@ a.tag--small,
   text-decoration: underline !important; }
 
 .text-color-base {
-  color: #5d686f !important; }
+  color: #2b2f31 !important; }
 
 .text-color-light {
-  color: #9eabb3 !important; }
+  color: #5d686f !important; }
 
 .text-color-link {
   color: #349ef3 !important; }
@@ -2450,7 +2469,7 @@ a.tag--small,
     padding: 8px;
     min-width: 180px;
     background-color: rgba(0, 0, 20, 0.93);
-    color: #fff;
+    color: #ffffff61;
     content: attr(data-tooltip);
     font-size: 0.93em;
     line-height: 1.9em;
@@ -2581,7 +2600,7 @@ a.tag--small,
     position: absolute;
     top: 15px;
     left: 15px;
-    color: #5d686f; }
+    color: #2b2f31; }
   #algolia-search-modal .media-content {
     font-size: 0.95em; }
   #algolia-search-modal .search-input {
@@ -2599,7 +2618,7 @@ a.tag--small,
     margin-top: 0; }
   #algolia-search-modal .results-count {
     line-height: 50px;
-    color: #5d686f; }
+    color: #2b2f31; }
   #algolia-search-modal .searchby-algolia {
     position: absolute;
     top: 15px;
@@ -2620,11 +2639,11 @@ a.tag--small,
     transform: translateY(-50%); }
 
 pre > code {
-  background: #f7f8f8;
+  background: #f7f8f861;
   color: #333; }
 
 code {
-  background-color: #f7f8f8; }
+  background-color: #f7f8f861; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
@@ -2632,16 +2651,16 @@ code {
 
 figure.highlight,
 .codeblock {
-  background: #f7f8f8;
+  background: #f7f8f861;
   color: #333; }
   figure.highlight figcaption,
   .codeblock figcaption {
-    background: #f7f8f8;
+    background: transparent;
     color: #999999; }
   figure.highlight .gutter,
   .codeblock .gutter {
-    background: #f7f8f8;
-    border-right-color: #e6e6e6; }
+    background: transparent;
+    border-right-color: #2b2f31; }
     figure.highlight .gutter .line,
     .codeblock .gutter .line {
       color: #aaaaaa; }
