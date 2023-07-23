@@ -8302,12 +8302,12 @@ blockquote {
   position: fixed;
   bottom: 0;
   height: 60px;
-  background: white;
+  background: #ffffff61;
   margin: 0;
-  border-top: 1px solid #eef2f8;
   padding: 0 15px;
   z-index: 40;
   transition: transform .25s ease-in-out;
+  backdrop-filter: blur(10px);
   -webkit-transition: -webkit-transform .25s ease-in-out; }
 
 @media only screen and (max-width: 767px) {
@@ -8445,7 +8445,6 @@ blockquote {
   background: transparent;
   position: fixed;
   top: 0;
-  border: 1px solid #eef2f8;
   color: #88909a;
   z-index: 20;
   transition: transform .25s ease-in-out;
@@ -9882,7 +9881,9 @@ a.fancybox {
 .pagination-bar {
   height: auto;
   width: 100%;
-  height: 60px; }
+  height: 60px;
+  backdrop-filter: blur(10px);
+  background: #ffffff61; }
   .pagination-bar .pagination {
     position: relative;
     height: 60px;
